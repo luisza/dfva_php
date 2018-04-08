@@ -37,10 +37,10 @@ Si se desea autenticar y revisar estado de la autenticación
 .. code:: php 
 
     require 'client.php';
-    $client= new dfva_client;
+    $client= new DfvaClient;
     $response = $client->authenticate("0802880199");
     var_dump($response);
-    $check_response = $client->check_autenticate($response["id_transaction"]);
+    $check_response = $client->autenticate_check($response["id_transaction"]);
     var_dump($check_response);
     $delete_response =$client->autenticate_delete($response["id_transaction"]);
     var_dump($delete_response);
@@ -52,7 +52,7 @@ Si se desea revisar si un suscriptor está conectado
 .. code:: php
 
     require 'client.php';
-    $client= new dfva_client;
+    $client= new DfvaClient;
     $isconnect=$client->is_suscriptor_connected("0802880199");
     var_dump($isconnect);
 
@@ -61,11 +61,11 @@ Si se desea firmar y revisar estado de la firma.
 .. code:: php
 
     require 'client.php';
-    $client= new dfva_client;
+    $client= new DfvaClient;
     $document=base64_encode(file_get_contents ('document.format'));
     $response=$client->sign("0402120119", $document, "test");
     var_dump($response);
-    $check_response = $client->check_sign($response["id_transaction"]);
+    $check_response = $client->sign_check($response["id_transaction"]);
     var_dump($check_response);
     $delete_response =$client->sign_delete($response["id_transaction"]);
     var_dump($delete_response);

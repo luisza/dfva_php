@@ -1,7 +1,7 @@
 <?php 
 
 require dirname(__FILE__).'/crypto.php';
-class dfva_client {
+class DfvaClientInternal {
    
    function __construct() {
      $this->settings = include('settings.php');
@@ -54,7 +54,7 @@ class dfva_client {
   }
 
 
-  public function check_autenticate($code){
+  public function autenticate_check($code){
       // check code format
       date_default_timezone_set($this->settings['TIMEZONE']);
       $data = json_encode ([
@@ -111,14 +111,14 @@ class dfva_client {
  }
 
  public function sign($identification, $document, $resume, 
-          $_format='xml_cofirma'){
+          $format='xml_cofirma'){
           date_default_timezone_set($this->settings['TIMEZONE']);
 
           $data = [
             'institution'=> $this->settings['INSTITUTION_CODE'],
             'notification_url'=> $this->settings['URL_NOTIFY'],
             'document'=> $document,
-            'format'=> $_format,
+            'format'=> $format,
             'algorithm_hash'=> $this->settings['ALGORITHM'],
             'document_hash'=> $this->crypt->get_hash_sum($document,  
                                             $this->settings['ALGORITHM']),
@@ -143,7 +143,7 @@ class dfva_client {
           return $this->crypt->decrypt($result['data']);
   }
 
-  public function check_sign($code){
+  public function sign_check($code){
       // check code format
       date_default_timezone_set($this->settings['TIMEZONE']);
       $data = json_encode ([
@@ -199,7 +199,7 @@ class dfva_client {
       return isset($datar['result']) ? $datar['result'] : False;
  }
 
-  public function validate($document, $_type, $format=Null){
+  public function validate($document, $type, $format=Null){
       date_default_timezone_set($this->settings['TIMEZONE']);
       $data = [
                   'institution'=> $this->settings['INSTITUTION_CODE'],
@@ -224,7 +224,7 @@ class dfva_client {
                   'encrypt_method'=>$this->settings['CIPHER']
       ]; 
 
-      if ($_type == 'certificate'){
+      if ($type == 'certificate'){
           $url = $this->settings['VALIDATE_CERTIFICATE'];
       }else{
           $url = $this->settings['VALIDATE_DOCUMENT'];
@@ -261,5 +261,136 @@ class dfva_client {
       return isset($datar['is_connected']) ? $datar['is_connected'] : False;
   }
 }
+
+class DfvaClient extends DfvaClientInternal{
+    function __construct(){
+      
+      $this->error_sign_auth_data = ["code"=> "N/D",
+			      "status"=> 2,
+			      "identification"=>Null,
+			      "id_transaction"=> 0,
+			      "request_datetime"=> "",
+			      "sign_document"=> "",
+			      "expiration_datetime"=> "",
+			      "received_notification"=> true,
+			      "duration"=> 0,
+            "status_text"=> "Problema de comunicación interna"];
+
+      $this->error_validate_data = ["code"=> "N/D",
+			"status"=> 2,
+			"identification"=>null,
+			"received_notification"=>Null,
+      "status_text"=> "Problema de comunicación interna"];
+
+
+      parent::__construct();
+
+    }
+
+    public function authenticate($identification){
+
+        try {
+          $dev=parent::authenticate($identification);
+        } catch (Exception $e) {
+          $dev=$this->error_sign_auth_data ;
+        }
+        if($dev==null) $dev=$this->error_sign_auth_data ;
+        return $dev;
+    }
+    public function autenticate_check($code){
+        try{
+          $dev=parent::autenticate_check($code);
+        } catch (Exception $e) {
+          $dev=$this->error_sign_auth_data ;
+        }
+        if($dev==null) $dev=$this->error_sign_auth_data ;
+      return $dev;        
+    }
+
+    public function autenticate_delete($code){
+        try{
+           $dev= parent::autenticate_delete($code);
+         } catch (Exception $e) {
+           $dev=False;
+        }
+        if($dev==null) $dev=False ;
+      return $dev;
+    }
+    public function sign($identification, $document, $resume, 
+              $format='xml_cofirma'){
+
+        if (!in_array($format, $this->settings['SUPPORTED_SIGN_FORMAT']))
+            return [
+              "code"=> "N/D",
+		          "status"=> 12,
+		          "identification"=>Null,
+		          "id_transaction"=> 0,
+		          "request_datetime"=> "",
+		          "sign_document"=> "",
+		          "expiration_datetime"=> "",
+		          "received_notification"=> true,
+		          "duration"=> 0,
+              "status_text"=> "Formato de documento inválido, posibles:".implode(
+                            ",",$this->settings['SUPPORTED_SIGN_FORMAT'])
+              ];
+
+        try{
+          $dev=parent::sign($identification, $document, $resume, 
+              $format=$format);
+        } catch (Exception $e) {
+          $dev=$this->error_sign_auth_data ;
+        }
+      if($dev==null) $dev=$this->error_sign_auth_data ;
+      return $dev;  
+
+    }
+    public function sign_check($code){
+        try{
+          $dev=parent::sign_check($code);
+        } catch (Exception $e) {
+          $dev=$this->error_sign_auth_data ;
+        }
+        if($dev==null) $dev=$this->error_sign_auth_data ;
+      return $dev;  
+    }
+    public function sign_delete($code){
+        try{
+          $dev=parent::sign_delete($code);
+        } catch (Exception $e) {
+           $dev=False;
+        }
+      if($dev==null) $dev=False ;
+      return $dev;
+    }
+    public function validate($document, $type, $format=Null){
+        if ( isset($format) && !in_array($format, $this->settings['SUPPORTED_VALIDATE_FORMAT']))
+            return ["code"=> "N/D",
+			              "status"=> 14,
+			              "identification"=>null,
+			              "received_notification"=>null,
+                    "status_text"=> "Formato inválido posibles: ".implode(
+                            ",", $this->settings['SUPPORTED_VALIDATE_FORMAT'])
+                    ];
+
+
+      try{
+         $dev=parent::validate($document, $type, $format=$format);
+      } catch (Exception $e) {
+        $dev=$this->error_validate_data;
+      }
+      if($dev==null) $dev=$this->error_validate_data;
+      return $dev;
+    }
+    public function is_suscriptor_connected($identification){
+      try{
+        $dev=parent::is_suscriptor_connected($identification);
+      } catch (Exception $e) {
+        $dev=False ;
+      }
+      if($dev==null) $dev=False;
+      return $dev;
+    }
+}
+
 
 ?>
