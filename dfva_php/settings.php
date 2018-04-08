@@ -2,6 +2,7 @@
 
 return [
    'TIMEZONE' =>'America/Costa_Rica',
+   'DATE_FORMAT'=> "Y-m-d h:m:s",
    'ALGORITHM' =>'sha512', 
    'DFVA_SERVER_URL' =>'http://localhost:8000',
    'AUTHENTICATE_INSTITUTION' =>'/authenticate/institution/',
@@ -17,11 +18,13 @@ return [
    'SUPPORTED_SIGN_FORMAT' => ['xml_cofirma','xml_contrafirma','odf','msoffice'],
    'SUPPORTED_VALIDATE_FORMAT' => ['certificate','cofirma','contrafirma','odf','msoffice'],
 
-   'PUBLIC_CERTIFICATE' => '',
-   'SERVER_PUBLIC_KEY' =>openssl_pkey_get_public(file_get_contents('./cert.crt')),
-   'CODE' =>'',
-   'PRIVATE_KEY' => openssl_get_privatekey(file_get_contents('./cert.key')),
-   'URL_NOTIFY' =>'N/D'
+   'PUBLIC_CERTIFICATE' => './cert.crt',
+   'SERVER_PUBLIC_KEY' =>'./cert_pub.key',
+   'INSTITUTION_CODE' =>'96b3c534-24f2-43d8-9093-d3f1eabc51d6',
+   'PRIVATE_KEY' => './cert.key',
+   'URL_NOTIFY' =>'N/D',
+   'CIPHER' => "aes-256-cfb",
+   'SESSION_KEY_SIZE'=> 32
 ];
 
 ?>
