@@ -13,6 +13,8 @@ Edite el archivo settings.php según los datos proporcionados en dfva.
 
 Las opciones `PUBLIC_CERTIFICATE, SERVER_PUBLIC_KEY, INSTITUTION_CODE, PRIVATE_KEY`, son rutas a archivos donde se almacenan los certificados y llaves.
 
+Requiere php-curl para enviar peticiones.
+
 Modo de uso 
 ################
 
