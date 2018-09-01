@@ -24,8 +24,22 @@ class dfva_crypto {
     #var_dump($keyinfo);
       return $keyinfo["bits"];
   }
+  
+   private function decypted_checksum_check($data, $data_hash){
+        $newhash = $this->get_hash_sum($data);
+        if(strcmp($newhash, $data_hash) != 0 ){
+           return json_encode( ["code"=> "N/D",
+                "status"=> -2,
+                "identification"=>null,
+                "received_notification"=>Null,
+                "status_text"=> "Problema: suma hash difiere"]);
+        }
+        
+        return $data;
+    }
 
-  public function decrypt($cipher_text, $as_str=true){
+  public function decrypt($cipher_data, $as_str=true){
+    $cipher_text = $cipher_data['data'];
     $cipher=$this->settings['CIPHER'];
     $stream = fopen('php://memory','r+');
     fwrite($stream, base64_decode($cipher_text));
@@ -49,11 +63,11 @@ class dfva_crypto {
 
     $decrypted = openssl_decrypt($ciphertext, $cipher, $session_key, 
                                   $options=OPENSSL_RAW_DATA, $iv);
-    
+
+    $decrypted = $this->decypted_checksum_check($decrypted, $cipher_data['data_hash']);
     if($as_str){
-     $decrypted = json_decode($decrypted, true);
+        $decrypted = json_decode($decrypted, true);
     }
-    
     return $decrypted;
   }
 

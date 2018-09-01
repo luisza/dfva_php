@@ -20,7 +20,7 @@ return [
 
    'PUBLIC_CERTIFICATE' => './cert.crt',
    'SERVER_PUBLIC_KEY' =>'./cert_pub.key',
-   'INSTITUTION_CODE' =>'96b3c534-24f2-43d8-9093-d3f1eabc51d6',
+   'INSTITUTION_CODE' =>'93bb2cad-aab2-46c8-97d8-d7f4492ab542',
    'PRIVATE_KEY' => './cert.key',
    'URL_NOTIFY' =>'N/D',
    'CIPHER' => "aes-256-cfb",

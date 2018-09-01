@@ -45,12 +45,10 @@ class DfvaClientInternal {
                   "data"=> $edata,
                   'encrypt_method'=>$this->settings['CIPHER']
       ];
-
-     
-
+   
       $url=$this->settings['DFVA_SERVER_URL'] . $this->settings['AUTHENTICATE_INSTITUTION'];
       $result = $this->send_post($url, $params);
-      return $this->crypt->decrypt($result['data']);
+      return   $this->crypt->decrypt($result);
   }
 
 
@@ -78,7 +76,7 @@ class DfvaClientInternal {
       $url=$this->settings['DFVA_SERVER_URL'] . $this->settings['CHECK_AUTHENTICATE_INSTITUTION'];
       $url=str_replace("%s", strval($code),  $url);
       $result = $this->send_post($url, $params);
-      return $this->crypt->decrypt($result['data']);
+      return $this->crypt->decrypt($result);
  }
 
   public function autenticate_delete($code){
@@ -105,7 +103,7 @@ class DfvaClientInternal {
       $url=$this->settings['DFVA_SERVER_URL'] . $this->settings['AUTHENTICATE_DELETE'];
       $url=str_replace("%s", strval($code),  $url);
       $result = $this->send_post($url, $params);
-      $datar=$this->crypt->decrypt($result['data']);
+      $datar=$this->crypt->decrypt($result);
       
       return isset($datar['result']) ? $datar['result'] : False;
  }
@@ -140,7 +138,7 @@ class DfvaClientInternal {
 
           $url=$this->settings['DFVA_SERVER_URL'] . $this->settings['SIGN_INSTUTION'];
           $result = $this->send_post($url, $params);
-          return $this->crypt->decrypt($result['data']);
+          return $this->crypt->decrypt($result);
   }
 
   public function sign_check($code){
@@ -167,7 +165,7 @@ class DfvaClientInternal {
       $url=$this->settings['DFVA_SERVER_URL'] . $this->settings['CHECK_SIGN_INSTITUTION'];
       $url=str_replace("%s", strval($code),  $url);
       $result = $this->send_post($url, $params);
-      return $this->crypt->decrypt($result['data']);
+      return $this->crypt->decrypt($result);
  }
 
   public function sign_delete($code){
@@ -194,7 +192,7 @@ class DfvaClientInternal {
       $url=$this->settings['DFVA_SERVER_URL'] . $this->settings['SIGN_DELETE'];
       $url=str_replace("%s", strval($code),  $url);
       $result = $this->send_post($url, $params);
-      $datar=$this->crypt->decrypt($result['data']);
+      $datar=$this->crypt->decrypt($result);
       
       return isset($datar['result']) ? $datar['result'] : False;
  }
@@ -232,7 +230,7 @@ class DfvaClientInternal {
       $url=$this->settings['DFVA_SERVER_URL'] .$url;
 
       $result = $this->send_post($url, $params);
-      return $this->crypt->decrypt($result['data']);
+      return $this->crypt->decrypt($result);
       
   }
 
