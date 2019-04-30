@@ -12,7 +12,7 @@ class DfvaClientInternal {
   private function send_post($url, $data){
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
@@ -32,7 +32,7 @@ class DfvaClientInternal {
                   
       ]);
 
-      
+
 
       $edata=$this->crypt->encrypt($data);
       $hashsum = $this->crypt->get_hash_sum($edata);
