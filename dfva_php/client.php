@@ -5,7 +5,6 @@ require_once dirname(__FILE__).'/settings.php';
 class DfvaClientInternal {
     private $crypt;
    function __construct() {
-     //$this->settings = Settings::getInstance();
      $this->crypt=new dfva_crypto();
    }
 

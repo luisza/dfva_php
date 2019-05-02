@@ -1,7 +1,5 @@
 <?php
-// Singleton class
-final class Settings {
-    private static $instance = null;
+class Settings {
     private static $timezone = 'America/Costa_Rica';
     private static $date_format = "Y-m-d h:m:s";
     private static $algorithm = 'sha512';
@@ -24,16 +22,6 @@ final class Settings {
     private static $url_notify = 'N/D';
     private static $cipher = "aes-256-cfb";
     private static $session_key_size = 32;
-
-    public static function getInstance()
-    {
-        if (self::$instance == null)
-        {
-            self::$instance = new Settings();
-        }
-
-        return self::$instance;
-    }
 
     public static function getAlgorithm()
     {
