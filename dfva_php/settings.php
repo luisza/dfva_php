@@ -4,7 +4,7 @@ return [
    'TIMEZONE' =>'America/Costa_Rica',
    'DATE_FORMAT'=> "Y-m-d h:m:s",
    'ALGORITHM' =>'sha512', 
-   'DFVA_SERVER_URL' =>'http://localhost:8000',
+   'DFVA_SERVER_URL' =>'https://mifirmacr.org',
    'AUTHENTICATE_INSTITUTION' =>'/authenticate/institution/',
    'CHECK_AUTHENTICATE_INSTITUTION' =>'/authenticate/%s/institution_show/',
    'AUTHENTICATE_DELETE' =>'/authenticate/%s/institution_delete/',
@@ -20,7 +20,7 @@ return [
 
    'PUBLIC_CERTIFICATE' => './cert.crt',
    'SERVER_PUBLIC_KEY' =>'./cert_pub.key',
-   'INSTITUTION_CODE' =>'93bb2cad-aab2-46c8-97d8-d7f4492ab542',
+   'INSTITUTION_CODE' =>'4eb47d5d-e57e-4419-97f6-65da00b4afe5',
    'PRIVATE_KEY' => './cert.key',
    'URL_NOTIFY' =>'N/D',
    'CIPHER' => "aes-256-cfb",

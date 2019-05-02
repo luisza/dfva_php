@@ -13,7 +13,7 @@ require 'client.php';
 $client= new DfvaClient;
 /**  AUTHENTICATE  **/
 
-$response = $client->authenticate("0402120119");
+$response = $client->authenticate("04-0212-0119");
 var_dump($response);
 
 /**
