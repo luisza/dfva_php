@@ -1,10 +1,11 @@
 <?php 
 
 require dirname(__FILE__).'/crypto.php';
+require_once dirname(__FILE__).'settings.php';
 class DfvaClientInternal {
    
    function __construct() {
-     $this->settings = include('settings.php');
+     $this->settings = Settings::getInstance();
      $this->crypt=new dfva_crypto();
    }
 
