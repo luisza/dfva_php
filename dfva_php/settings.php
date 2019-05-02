@@ -5,7 +5,7 @@ final class Settings {
     private static $timezone = 'America/Costa_Rica';
     private static $date_format = "Y-m-d h:m:s";
     private static $algorithm = 'sha512';
-    private static $dfva_server_url = 'http://159.89.119.117:8000';
+    private static $dfva_server_url = 'https://mifirmacr.org';
     private static $authenticate_institution = '/authenticate/institution/';
     private static $check_authenticate_institution = '/authenticate/%s/institution_show/';
     private static $authenticate_delete = '/authenticate/%s/institution_delete/';
@@ -19,7 +19,7 @@ final class Settings {
     private static $supported_validate_format = ['certificate','cofirma','contrafirma','odf','msoffice', 'pdf'];
     private static $public_certificate = './cert.crt';
     private static $server_public_key = './cert_pub.key';
-    private static $institution_code = 'c30e75ea-66db-4262-bb1d-b775d1c47179';
+    private static $institution_code = '4eb47d5d-e57e-4419-97f6-65da00b4afe5';
     private static $private_key = './cert.key';
     private static $url_notify = 'N/D';
     private static $cipher = "aes-256-cfb";
