@@ -15,10 +15,10 @@ class Settings {
     private static $suscriptor_connected = '/validate/institution_suscriptor_connected/';
     private static $supported_sign_format = ['xml_cofirma','xml_contrafirma','odf','msoffice', 'pdf'];
     private static $supported_validate_format = ['certificate','cofirma','contrafirma','odf','msoffice', 'pdf'];
-    private static $public_certificate = './cert.crt';
-    private static $server_public_key = './cert_pub.key';
+    private static $public_certificate = 'cert.crt';
+    private static $server_public_key = 'cert_pub.key';
     private static $institution_code = '4eb47d5d-e57e-4419-97f6-65da00b4afe5';
-    private static $private_key = './cert.key';
+    private static $private_key = 'cert.key';
     private static $url_notify = 'N/D';
     private static $cipher = "aes-256-cfb";
     private static $session_key_size = 32;
@@ -70,17 +70,17 @@ class Settings {
 
     public static function getPrivateKey()
     {
-        return self::$private_key;
+        return dirname(__FILE__)."/".self::$private_key;
     }
 
     public static function getPublicCertificate()
     {
-        return self::$public_certificate;
+        return dirname(__FILE__)."/".self::$public_certificate;
     }
 
     public static function getServerPublicKey()
     {
-        return self::$server_public_key;
+        return dirname(__FILE__)."/".self::$server_public_key;
     }
 
     public static function getSessionKeySize()

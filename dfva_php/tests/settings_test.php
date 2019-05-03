@@ -6,7 +6,7 @@ class SettingsTest extends TestCase
 {
     public function testSettingsData(){
         $website_regex = "/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-]*$/";
-
+        echo Settings::getDfvaServerUrl();
         $this->assertTrue(preg_match($website_regex, Settings::getDfvaServerUrl()) == TRUE);
     }
 }

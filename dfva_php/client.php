@@ -39,6 +39,9 @@ class DfvaClientInternal {
   }
 
   public function authentication($identification, $action){
+       /*
+        * $action is a value from the AUTHENTICATION constant
+        * */
       $data = $this->getAuthData($identification, $action);
 
       $edata=$this->crypt->encrypt($data);

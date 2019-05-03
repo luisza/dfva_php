@@ -15,7 +15,6 @@ $client= new DfvaClient;
 
 $response = $client->authentication("04-0212-0119", AUTHENTICATION["authenticate"]);
 var_dump($response);
-
 /**
 $check_response = $client->autenticate_check($response["id_transaction"]);
 var_dump($check_response);
