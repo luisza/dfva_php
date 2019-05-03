@@ -98,11 +98,13 @@ Las pruebas unitarias se hacen con phpunit versión 8.1.
 Use el siguiente comando para probar que el framework
 está sirviendo.
 
-.. code:: bash
+.. code:: sh
+
     php phpunit-8.1.phar --version
 
 Es común hacer el archivo PHAR un ejecutable, utilizando
 
-.. code:: bash
+.. code:: sh
+
     chmod +x phpunit-8.1.phar
     ./phpunit-8.1.phar --version
