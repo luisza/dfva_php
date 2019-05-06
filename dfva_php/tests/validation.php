@@ -8,17 +8,12 @@ $valclient = new DfvaClient;
 
 //TODO finish this function
 function pem_to_base64($certificate){
-    /*if pem.detect(certificate):
-        _, _, der_bytes = pem.unarmor(certificate)
-    else:
-        der_bytes = certificate
-    dev = b64encode(der_bytes).decode()*/
-    # certificate = certificate.decode()
-    # dev = certificate.replace("-----BEGIN CERTIFICATE-----\n", '').replace(
-    #     '\n-----END CERTIFICATE-----', ''
-    # ).replace('\n', '')
-    # print(dev)
-    //return dev
+    $begin = "CERTIFICATE-----";
+    $end   = "-----END";
+    $certificate = substr($certificate, strpos($certificate, $begin)+strlen($begin));
+    $certificate = substr($certificate, 0, strpos($certificate, $end));
+    $base64 = base64_decode($certificate);
+    return $base64;
 }
 
 
