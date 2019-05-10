@@ -6,7 +6,6 @@ require_once dirname(__FILE__).'/../client.php';
 
 $valclient = new DfvaClient;
 
-//TODO finish this function
 function pem_to_base64($certificate){
     $begin = "CERTIFICATE-----";
     $end   = "-----END";

@@ -3,7 +3,6 @@
 require_once dirname(__FILE__).'/utils.php';
 
 function build_authentication($name){
-    global $AUTHENTICATION_RESPONSE_TABLE;
     echo printf('
 class %s (unittest.TestCase):
     function setUp(self):
@@ -12,11 +11,11 @@ class %s (unittest.TestCase):
     function do_checks(self, identification):
          pass
 ', $name);
-//    for identification in AUTHENTICATION_RESPONSE_TABLE:
-    foreach ($AUTHENTICATION_RESPONSE_TABLE as $identification)
+    foreach (AUTHENTICATION_RESPONSE_TABLE as $identification){
         printf('
     function test_auth_%s(self):
         self.do_checks("%s")', $identification, str_replace('-', '', $identification));
+    }
 }
 
 
