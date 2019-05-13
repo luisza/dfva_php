@@ -15,13 +15,15 @@ class AuthenticationTest extends TestCase
 {
     public function load_authentication()
     {
-        global $AUTH_ALLOWED_TEST, $authclient;
+        global $AUTH_ALLOWED_TEST, $authclient, $authtransactions;
         foreach(AUTHENTICATION_RESPONSE_TABLE as $identification => $value){
             if(!empty($AUTH_ALLOWED_TEST) && !in_array($identification, $AUTH_ALLOWED_TEST)){
                 continue;
             }
+            settype($identification, 'string');
             $auth_resp = $authclient->authentication($identification, AUTHENTICATION["authenticate"]);
             $authtransactions[$identification] = $auth_resp;
+            //var_dump($authtransactions[$identification]);
             $eq = AUTHENTICATION_RESPONSE_TABLE[$identification][1];
             $idx = AUTHENTICATION_RESPONSE_TABLE[$identification][2];
             if ($eq == '=') {
@@ -33,7 +35,7 @@ class AuthenticationTest extends TestCase
             }
         }
     }
-    protected function setUp(): void
+    public function test_setUp()
     {
         global $TIMEWAIT;
         try {
@@ -43,8 +45,8 @@ class AuthenticationTest extends TestCase
             throw new $e;
         }
         sleep($TIMEWAIT);
-        //echo 'Recuerde modificar el archivo settings.php y registrar la institución en dfva\n
-          //      export TEST_WITH_BCCR=True si se ejecuta con el BCCR';
+        echo "\nRecuerde modificar el archivo settings.php y registrar la institución en dfva\n
+                export TEST_WITH_BCCR=True si se ejecuta con el BCCR\n";
     }
 
     public function do_checks($identification){

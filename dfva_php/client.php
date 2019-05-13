@@ -46,10 +46,9 @@ class DfvaClientInternal {
 
       $edata=$this->crypt->encrypt($data);
       $hashsum = $this->crypt->get_hash_sum($edata);
-
       $this->setParams($hashsum, $edata);
 
-      $url=Settings::getDfvaServerUrl() . $this->getURI($action);
+      $url=Settings::getDfvaServerUrl() . $this->getURI($action, $identification);
       $result = $this->send_post($url, $this->params);
       $result_decrypted = $this->crypt->decrypt($result);
       if($action == AUTHENTICATION["authenticate_delete"]){
@@ -63,14 +62,14 @@ class DfvaClientInternal {
       $this->params["data"] = $edata;
   }
 
-  private function getURI($action){
+  private function getURI($action, $identification=null){
        switch ($action){
            case AUTHENTICATION["authenticate"]:
                return Settings::getAuthenticateInstitution();
            case AUTHENTICATION["authenticate_check"]:
-               return Settings::getCheckAuthenticateInstitution();
+               return sprintf(Settings::getCheckAuthenticateInstitution(), $identification);
            case AUTHENTICATION["authenticate_delete"]:
-               return Settings::getAuthenticateDelete();
+               return sprintf(Settings::getAuthenticateDelete(), $identification);
            default:
                return null;
        }

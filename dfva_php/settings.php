@@ -17,7 +17,7 @@ class Settings {
     private static $supported_validate_format = ['certificate','cofirma','contrafirma','odf','msoffice', 'pdf'];
     private static $public_certificate = 'cert.crt';
     private static $server_public_key = 'cert_pub.key';
-    private static $institution_code = 'ffaf8a2d-0d51-41a3-8432-0ca8a360071c';
+    private static $institution_code = 'd75b1531-6297-4668-90c9-f867d15c3814';
     private static $private_key = 'cert.key';
     private static $url_notify = 'N/D';
     private static $cipher = "aes-256-cfb";
