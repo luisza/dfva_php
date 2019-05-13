@@ -23,14 +23,15 @@ $CERT_FUNC = function($x){
 $base64_encode = function($str){
     return base64_encode($str);
 };
+$path = "";
+$experated = [];
 
 class TestValidateCertificates extends TestCase{
-    private $path;
-    private $experated;
 
     function test_setUp(){
-        $this->path = "dfva_testdocument/files/certs/";
-        $this->experated = [
+        global $path, $experated;
+        $path = "dfva_testdocument/files/certs/";
+        $experated = [
             '01-0001-0002'=> ['ANA ROJAS PRUEBA', 0, True],
             '199887755443'=> ['NARCISO CASCANTE PRUEBA', 0, True],
 
@@ -43,12 +44,12 @@ class TestValidateCertificates extends TestCase{
     }
 
     function make_validation($identification){
-        global $valclient, $CERT_FUNC;
-        $cert = read_files('crt',$doc_path=$this->path,
-           $name=str_replace('-', '', $identification).'.',
-            $post_read_fn = $CERT_FUNC);
+        global $valclient, $CERT_FUNC, $path, $experated;
+        $cert = read_files('crt',$doc_path=$path,
+            $post_read_fn = $CERT_FUNC,
+            $name=str_replace('-', '', $identification).'.');
         $result = $valclient->validate($cert, 'certificate');
-        $data = $this->experated[$identification];
+        $data = $experated[$identification];
         $this->assertSame($result['status'], $data[1]);
         if($data[2]) {
             $this->assertSame($result['full_name'], $data[0]);
@@ -60,23 +61,23 @@ class TestValidateCertificates extends TestCase{
         $this->make_validation("01-0001-0002");
     }
 
-    function test_199887755443(){
+    function est_199887755443(){
         $this->make_validation("199887755443");
     }
 
-    function test_0100010002exp(){
+    function est_0100010002exp(){
         $this->make_validation("01-0001-0002exp");
     }
 
-    function test_199887755443exp(){
+    function est_199887755443exp(){
         $this->make_validation("199887755443exp");
     }
 
-    function test_0100010002rev(){
+    function est_0100010002rev(){
         $this->make_validation("01-0001-0002rev");
     }
 
-    function test_199887755443rev(){
+    function est_199887755443rev(){
         $this->make_validation("199887755443rev");
     }
 }

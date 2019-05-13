@@ -69,5 +69,5 @@ function read_files($format, $doc_path="dfva_testdocument/files",
     $filesize = filesize($fpath);
     $f = fread($arch, $filesize);
     fclose($arch);
-    return $post_read_fn($f);
+    return call_user_func($post_read_fn,$f);
 }

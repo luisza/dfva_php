@@ -15,6 +15,9 @@ Las opciones `PUBLIC_CERTIFICATE, SERVER_PUBLIC_KEY, INSTITUTION_CODE, PRIVATE_K
 
 Requiere php-curl para enviar peticiones.
 
+.. code:: sh
+    sudo apt install php7.x php-curl
+
 Modo de uso 
 ################
 
@@ -94,7 +97,7 @@ Si se desea validar un documento
 Pruebas Unitarias
 ################
 
-Las pruebas unitarias se hacen con phpunit versión 8.1.
+Las pruebas unitarias se hacen con phpunit versión 8.1(Por lo tanto se debe usar php7.x para correrlas).
 Use el siguiente comando para probar que el framework
 está sirviendo.
 
@@ -108,3 +111,9 @@ Es común hacer el archivo PHAR un ejecutable, utilizando
 
     chmod +x phpunit-8.1.phar
     ./phpunit-8.1.phar --version
+
+Si deseas correr todas las pruebas ejecute el siguientes comandos.
+
+.. code:: sh
+    chmod +x tests.sh
+    ./tests.sh
