@@ -42,7 +42,13 @@ class DfvaClientInternal {
        /*
         * $action is a value from the AUTHENTICATION constant
         * */
+      $log = sprintf("[%s] [%s] [%s] Info authenticate: %s %s", date("d-m-Y h:m:s"),
+                    __FILE__, 'INFO', $identification, $action).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
       $data = $this->getAuthData($identification, $action);
+      $log = sprintf("[%s] [%s] [%s] Data authenticate: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $data).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
 
       $edata=$this->crypt->encrypt($data);
       $hashsum = $this->crypt->get_hash_sum($edata);
@@ -51,6 +57,9 @@ class DfvaClientInternal {
       $url=Settings::getDfvaServerUrl() . $this->getURI($action, $identification);
       $result = $this->send_post($url, $this->params);
       $result_decrypted = $this->crypt->decrypt($result);
+      $log = sprintf("[%s] [%s] [%s] Decrypted authenticate: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', print_r($result_decrypted, true)).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
       if($action == AUTHENTICATION["authenticate_delete"]){
           return isset($result_decrypted['result']) ? $result_decrypted['result'] : False;
       }
@@ -101,6 +110,9 @@ class DfvaClientInternal {
 
  public function sign($identification, $document, $resume,
           $format='xml_cofirma'){
+         $log = sprintf("[%s] [%s] [%s] Info sign: %s %s %s", date("d-m-Y h:m:s"),
+                 __FILE__, 'DEBUG', $identification, $resume, $format).PHP_EOL;
+         error_log($log, 3, FILE_PATH);
           $data = [
             'institution'=> Settings::getInstitutionCode(),
             'notification_url'=> Settings::getUrlNotify(),
@@ -162,7 +174,7 @@ class DfvaClientInternal {
       return isset($datar['result']) ? $datar['result'] : False;
  }
 
-  public function validate($document, $type, $format=Null){
+  public function validate($document, $type, $format=null){
       date_default_timezone_set(Settings::getTimezone());
       $data = [
                   'institution'=> Settings::getInstitutionCode(),
@@ -171,10 +183,11 @@ class DfvaClientInternal {
                   'request_datetime'=> date(Settings::getDateFormat()),
                   
       ];
-      if(isset($format)){
+      if($format != null){
         $data['format']=$format;
       }
 
+      print_r($data);
       $data =json_encode($data);
       $edata=$this->crypt->encrypt($data);
       $hashsum = $this->crypt->get_hash_sum($edata);    
@@ -313,8 +326,8 @@ class DfvaClient extends DfvaClientInternal{
       if($dev==null) $dev=False ;
       return $dev;
     }
-    public function validate($document, $type, $_format=Null){
-        if ( isset($_format) && !in_array($_format, Settings::getSupportedValidateFormat()))
+    public function validate($document, $type, $_format=null){
+        if ( $_format!=null && !in_array($_format, Settings::getSupportedValidateFormat()))
             return ["code"=> "N/D",
 			              "status"=> 14,
 			              "identification"=>null,

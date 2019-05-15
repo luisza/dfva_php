@@ -11,46 +11,50 @@ $transactions = array();
 $client = new DfvaClient;
 
 
-function load_signdocuments(){
-    global $DOCUMENT_RESPONSE_TABLE, $DOCUMENT_FORMATS, $ALLOWED_TEST, $client, $transactions, $FORMAT_WAIT;
-    foreach ($DOCUMENT_RESPONSE_TABLE as $identification){
-        foreach ($DOCUMENT_FORMATS as $format){
-            if(!empty($ALLOWED_TEST)){
-                if(!(in_array($identification, $ALLOWED_TEST) && in_array($format, $ALLOWED_TEST[$identification]))){
-                    continue;
-                }
-            }
 
-            $auth_resp = $client->sign(
+
+class TestDocumentReceived extends TestCase
+{
+    function load_signdocuments(){
+        global $DOCUMENT_RESPONSE_TABLE, $DOCUMENT_FORMATS, $ALLOWED_TEST, $client, $transactions, $FORMAT_WAIT;
+        foreach ($DOCUMENT_RESPONSE_TABLE as $identification){
+            foreach ($DOCUMENT_FORMATS as $format){
+                if(!empty($ALLOWED_TEST)){
+                    if(!(in_array($identification, $ALLOWED_TEST) && in_array($format, $ALLOWED_TEST[$identification]))){
+                        continue;
+                    }
+                }
+
+                $auth_resp = $client->sign(
                     $identification,
                     read_files($format),
                     sprintf("test %s", $format),
                     $_format=$format,
                     );
-            if(!in_array($identification, $transactions)){
-                $transactions[$identification] = array();
+                if(!in_array($identification, $transactions)){
+                    $transactions[$identification] = array();
+                }
+                $transactions[$identification][$format] = $auth_resp;
+                if($auth_resp['id_transaction'] == 0 && !in_array($identification, [
+                        "500000000000",
+                        "01-1919-2222",
+                        "01-1919-2020",
+                        "01-1919-2121",
+                        "9-0000-0000-000"])){
+                    throw new Exception();
+                }
             }
-            $transactions[$identification][$format] = $auth_resp;
-            if($auth_resp['id_transaction'] == 0 && !in_array($identification, [
-                                                "500000000000",
-                                                "01-1919-2222",
-                                                "01-1919-2020",
-                                                "01-1919-2121",
-                                                "9-0000-0000-000"])){
-            throw new Exception();
-            }
+            sleep($FORMAT_WAIT);
         }
-        sleep($FORMAT_WAIT);
     }
-}
-
-
-class TestDocumentReceived extends TestCase
-{
     function test_setUpClass()
     {
         global $TIMEWAIT;
-        load_signdocuments();
+        try{
+            $this->load_signdocuments();
+        }catch (Exception $e){
+            print_r($e);
+        }
         sleep($TIMEWAIT);
         echo "Recuerde modificar los archivos de configuración y registrar " .
             "la institución en dfva";

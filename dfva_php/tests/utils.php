@@ -51,7 +51,7 @@ function read_files($format, $doc_path="dfva_testdocument/files",
     if($post_read_fn == null){
         $post_read_fn = function($a) {return $a;};
     }
-    $defaultpath = dirname(__FILE__).'/'.$doc_path.'/';
+    $defaultpath = dirname(__FILE__).'/'.$doc_path;
     $f = null;
     $fpath = null;
     if(in_array($format, ['xml_cofirma', 'xml_contrafirma'])){
@@ -68,6 +68,13 @@ function read_files($format, $doc_path="dfva_testdocument/files",
     $arch = fopen($fpath, 'rb');
     $filesize = filesize($fpath);
     $f = fread($arch, $filesize);
+    $f = base64_encode($f);
     fclose($arch);
     return call_user_func($post_read_fn,$f);
+}
+
+function der2pem($der_data) {
+    $pem = chunk_split(base64_encode($der_data), 64, "\n");
+    $pem = "-----BEGIN CERTIFICATE-----\n".$pem."-----END CERTIFICATE-----\n";
+    return $pem;
 }

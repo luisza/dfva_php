@@ -7,12 +7,7 @@ require_once dirname(__FILE__).'/../client.php';
 $valclient = new DfvaClient;
 
 function pem_to_base64($certificate){
-    $begin = "CERTIFICATE-----";
-    $end   = "-----END";
-    $certificate = substr($certificate, strpos($certificate, $begin)+strlen($begin));
-    $certificate = substr($certificate, 0, strpos($certificate, $end));
-    $base64 = base64_decode($certificate);
-    return $base64;
+    return utf8_decode(base64_encode($certificate));
 }
 
 
@@ -61,35 +56,36 @@ class TestValidateCertificates extends TestCase{
         $this->make_validation("01-0001-0002");
     }
 
-    function est_199887755443(){
+    function test_199887755443(){
         $this->make_validation("199887755443");
     }
 
-    function est_0100010002exp(){
+    function test_0100010002exp(){
         $this->make_validation("01-0001-0002exp");
     }
 
-    function est_199887755443exp(){
+    function test_199887755443exp(){
         $this->make_validation("199887755443exp");
     }
 
-    function est_0100010002rev(){
+    function test_0100010002rev(){
         $this->make_validation("01-0001-0002rev");
     }
 
-    function est_199887755443rev(){
+    function test_199887755443rev(){
         $this->make_validation("199887755443rev");
     }
 }
 
 
+$expected = [];
 
 class TestValidateDocuments extends TestCase
 {
-    private $expected;
     function test_setUp()
     {
-        $this->expected = [
+        global $expected;
+        $expected = [
             'cofirma'=> [
                 '527789139593,José María Montealegre Fernández
                 145764968887,José Figueres Ferrer', True, [23, 45, 21, 48, 12, 16]],
@@ -162,29 +158,29 @@ class TestValidateDocuments extends TestCase
     }
 
     function do_check($format, $filename){
-        global $base64_encode, $valclient;
+        global $base64_encode, $valclient, $expected;
         $document = null;
         if(in_array($format, ['cofirma','contrafirma', 'pdf', 'odf', 'msoffice'])){
-            $document = base64_decode(read_files($filename, $post_read_fn=$base64_encode));
+            $document = utf8_decode(read_files($filename, "dfva_testdocument/files/", $post_read_fn=$base64_encode));
         }else{
-            $document = base64_decode(read_files($filename));
+            $document = utf8_decode(read_files($filename));
         }
         $result = $valclient->validate($document, 'document', $_format=$format);
-        echo $result;
+        //print_r($result);
         $extracted_errors = $this->extract_codes($result['errors']);
         $extracted_signers = $this->prepare_names($result['signers']);
 
         # expected
         $expected_signers = $this->get_list_names(
-                $this->expected[$format][0]);
-        $expected_errors = $this->expected[$format][2];
+                $expected[$format][0]);
+        $expected_errors = $expected[$format][2];
 
         $expected_errors = sort($expected_errors);
         $expected_signers = sort($expected_signers);
 
         $this->assertTrue($this->arrays_are_similar($extracted_signers, $expected_signers));
         $this->assertTrue($this->arrays_are_similar($extracted_errors, $expected_errors));
-        $this->assertSame($this->expected[$_format][1],
+        $this->assertSame($expected[$_format][1],
             $result['was_successfully']);
     }
 
@@ -192,19 +188,19 @@ class TestValidateDocuments extends TestCase
         $this->do_check('cofirma', 'xml');
     }
 
-    function test_document_contrafirma(){
+    function est_document_contrafirma(){
         $this->do_check('contrafirma', 'xml');
     }
 
-    function test_document_msoffice(){
+    function est_document_msoffice(){
         $this->do_check('msoffice', 'msoffice');
     }
 
-    function test_document_odf(){
+    function est_document_odf(){
         $this->do_check('odf', 'odf');
     }
 
-    function test_document_pdf(){
+    function est_document_pdf(){
         $this->do_check('pdf', 'pdf');
     }
 }

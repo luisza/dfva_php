@@ -18,6 +18,12 @@ Requiere php-curl para enviar peticiones.
 .. code:: sh
     sudo apt install php7.x php-curl
 
+En el settings.php se encuentra una constante llamada LOG_PATH que contiene el path hacia los logs, puedes cambiarlo a lo que ocupas sino corra el siguiente comando
+
+.. code:: sh
+    sudo touch /var/log/dfva_php.log
+    sudo chmod 666 /var/log/dfva_php.log
+
 Modo de uso 
 ################
 
