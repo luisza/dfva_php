@@ -1,3 +1,9 @@
+# Custom ignores, added by @JZ1999
+.idea/
+*.key
+*.crt
+*.result.cache
+
 # Cache and logs (Symfony2)
 /app/cache/*
 /app/logs/*

@@ -1,30 +1,137 @@
 <?php
+class Settings {
+    private static $timezone = 'America/Costa_Rica';
+    private static $date_format = "Y-m-d h:m:s";
+    private static $algorithm = 'sha512';
+    private static $dfva_server_url = 'http://localhost:8000';
+    private static $authenticate_institution = '/authenticate/institution/';
+    private static $check_authenticate_institution = '/authenticate/%s/institution_show/';
+    private static $authenticate_delete = '/authenticate/%s/institution_delete/';
+    private static $sign_institution = '/sign/institution/';
+    private static $check_sign_institution = '/sign/%s/institution_show/';
+    private static $sign_delete = '/sign/%s/institution_delete/';
+    private static $validate_certificate = '/validate/institution_certificate/';
+    private static $validate_document = '/validate/institution_document/';
+    private static $suscriptor_connected = '/validate/institution_suscriptor_connected/';
+    private static $supported_sign_format = ['xml_cofirma','xml_contrafirma','odf','msoffice', 'pdf'];
+    private static $supported_validate_format = ['certificate','cofirma','contrafirma','odf','msoffice', 'pdf'];
+    private static $public_certificate = 'cert.crt';
+    private static $server_public_key = 'cert_pub.key';
+    private static $institution_code = '8e888c8c-75f7-4933-bc6f-f10132345d70';
+    private static $private_key = 'cert.key';
+    private static $url_notify = 'N/D';
+    private static $cipher = "aes-256-cfb";
+    private static $session_key_size = 32;
 
-return [
-   'TIMEZONE' =>'America/Costa_Rica',
-   'DATE_FORMAT'=> "Y-m-d h:m:s",
-   'ALGORITHM' =>'sha512', 
-   'DFVA_SERVER_URL' =>'https://mifirmacr.org',
-   'AUTHENTICATE_INSTITUTION' =>'/authenticate/institution/',
-   'CHECK_AUTHENTICATE_INSTITUTION' =>'/authenticate/%s/institution_show/',
-   'AUTHENTICATE_DELETE' =>'/authenticate/%s/institution_delete/',
-   'SIGN_INSTUTION' =>'/sign/institution/',
-   'CHECK_SIGN_INSTITUTION' =>'/sign/%s/institution_show/',
-   'SIGN_DELETE' =>'/sign/%s/institution_delete/',
-   'VALIDATE_CERTIFICATE' =>'/validate/institution_certificate/',
-   'VALIDATE_DOCUMENT' =>'/validate/institution_document/',
-   'SUSCRIPTOR_CONNECTED' =>'/validate/institution_suscriptor_connected/',
+    public static function getAlgorithm()
+    {
+        return self::$algorithm;
+    }
 
-   'SUPPORTED_SIGN_FORMAT' => ['xml_cofirma','xml_contrafirma','odf','msoffice', 'pdf'],
-   'SUPPORTED_VALIDATE_FORMAT' => ['certificate','cofirma','contrafirma','odf','msoffice', 'pdf'],
+    public static function getAuthenticateDelete()
+    {
+        return self::$authenticate_delete;
+    }
 
-   'PUBLIC_CERTIFICATE' => './cert.crt',
-   'SERVER_PUBLIC_KEY' =>'./cert_pub.key',
-   'INSTITUTION_CODE' =>'4eb47d5d-e57e-4419-97f6-65da00b4afe5',
-   'PRIVATE_KEY' => './cert.key',
-   'URL_NOTIFY' =>'N/D',
-   'CIPHER' => "aes-256-cfb",
-   'SESSION_KEY_SIZE'=> 32
-];
+    public static function getAuthenticateInstitution()
+    {
+        return self::$authenticate_institution;
+    }
 
-?>
+    public static function getCheckAuthenticateInstitution()
+    {
+        return self::$check_authenticate_institution;
+    }
+
+    public static function getCheckSignInstitution()
+    {
+        return self::$check_sign_institution;
+    }
+
+    public static function getCipher()
+    {
+        return self::$cipher;
+    }
+
+    public static function getDateFormat()
+    {
+        return self::$date_format;
+    }
+
+    public static function getDfvaServerUrl()
+    {
+        return self::$dfva_server_url;
+    }
+
+    public static function getInstitutionCode()
+    {
+        return self::$institution_code;
+    }
+
+    public static function getPrivateKey()
+    {
+        return dirname(__FILE__)."/".self::$private_key;
+    }
+
+    public static function getPublicCertificate()
+    {
+        return dirname(__FILE__)."/".self::$public_certificate;
+    }
+
+    public static function getServerPublicKey()
+    {
+        return dirname(__FILE__)."/".self::$server_public_key;
+    }
+
+    public static function getSessionKeySize()
+    {
+        return self::$session_key_size;
+    }
+
+    public static function getSignDelete()
+    {
+        return self::$sign_delete;
+    }
+
+    public static function getSignInstitution()
+    {
+        return self::$sign_institution;
+    }
+
+    public static function getSupportedSignFormat()
+    {
+        return self::$supported_sign_format;
+    }
+
+    public static function getSupportedValidateFormat()
+    {
+        return self::$supported_validate_format;
+    }
+
+    public static function getSuscriptorConnected()
+    {
+        return self::$suscriptor_connected;
+    }
+
+    public static function getTimezone()
+    {
+        return self::$timezone;
+    }
+
+    public static function getUrlNotify()
+    {
+        return self::$url_notify;
+    }
+
+    public static function getValidateCertificate()
+    {
+        return self::$validate_certificate;
+    }
+
+    public static function getValidateDocument()
+    {
+        return self::$validate_document;
+    }
+}
+
+const FILE_PATH = '/var/log/dfva_php.log';

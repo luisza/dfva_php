@@ -1,7 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c6004516-49ec-4261-8ccd-5a1910ecafd7" name="Default Changelist" comment="">
+    <list default="true" id="66dca580-45de-447b-b378-c6efe12e075d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/dfva_php/cert.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/authentication.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/builder.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/certificado.pem" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/certificado_caducado.pem" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/certs/build.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/lee_certs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/no_contrafirmado.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/test.cofirma" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/test.contrafirma" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/test.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/test.odt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/test.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/dfva_testdocument/files/test.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/phpunit-8.1.phar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/settings_test.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/signer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/utils.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dfva_php/tests/validation.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.rst" beforeDir="false" afterPath="$PROJECT_DIR$/README.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dfva_php/client.php" beforeDir="false" afterPath="$PROJECT_DIR$/dfva_php/client.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dfva_php/crypto.php" beforeDir="false" afterPath="$PROJECT_DIR$/dfva_php/crypto.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dfva_php/settings.php" beforeDir="false" afterPath="$PROJECT_DIR$/dfva_php/settings.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dfva_php/test.php" beforeDir="false" afterPath="$PROJECT_DIR$/dfva_php/test.php" afterDir="false" />
     </list>
@@ -13,38 +39,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/dfva_php/test.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dfva_php/settings.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="8" column="55" lean-forward="true" selection-start-line="8" selection-start-column="55" selection-end-line="8" selection-end-column="55" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dfva_php/crypto.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dfva_php/client.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+            <state relative-caret-position="232">
+              <caret line="50" column="6" selection-start-line="50" selection-start-column="6" selection-end-line="50" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dfva_php/tests/signer.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-8713">
+              <caret line="43" column="24" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/dfva_php/settings.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="21">
+              <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -71,8 +88,8 @@
         <option value="$PROJECT_DIR$/dfva_php/cert.key" />
         <option value="$PROJECT_DIR$/dfva_php/cert_pub.key" />
         <option value="$PROJECT_DIR$/dfva_php/cert.crt" />
-        <option value="$PROJECT_DIR$/dfva_php/settings.php" />
         <option value="$PROJECT_DIR$/dfva_php/test.php" />
+        <option value="$PROJECT_DIR$/dfva_php/settings.php" />
       </list>
     </option>
   </component>
@@ -94,15 +111,36 @@
     <option name="width" value="1366" />
     <option name="height" value="766" />
   </component>
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="Scope" currentSubView="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scope">
+        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
+          <expand>
+            <path>
+              <item name="dfva_php" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="~/Proyects/dfva_php" type="442cc68d:ScopeViewTreeModel$RootNode" />
+            </path>
+            <path>
+              <item name="dfva_php" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="~/Proyects/dfva_php" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="dfva_php" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="dfva_php" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="~/Proyects/dfva_php" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="dfva_php" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="tests" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -122,6 +160,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="/var/www/html" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -161,13 +200,13 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31246000" />
+    <option name="totallyTimeSpent" value="31289000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="2" width="1366" height="766" extended-state="0" />
+    <frame x="0" y="27" width="1366" height="741" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2128788" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18664643" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -180,7 +219,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.3297546" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.33333334" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.33904108" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -207,8 +246,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dfva_php/client.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
+        <state relative-caret-position="232">
+          <caret line="50" column="6" selection-start-line="50" selection-start-column="6" selection-end-line="50" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -233,17 +272,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dfva_php/settings.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="55" lean-forward="true" selection-start-line="8" selection-start-column="55" selection-end-line="8" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dfva_php/test.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
           <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dfva_php/tests/signer.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8713">
+          <caret line="43" column="24" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dfva_php/settings.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21">
+          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
         </state>
       </provider>
     </entry>
