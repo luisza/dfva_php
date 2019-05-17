@@ -49,11 +49,11 @@ Si se desea autenticar y revisar estado de la autenticación
 
     require 'client.php';
     $client= new DfvaClient;
-    $response = $client->authenticate("0802880199");
+    $response = $client->authenticate("0802880199", AUTHENTICATION["authenticate"]);
     var_dump($response);
-    $check_response = $client->autenticate_check($response["id_transaction"]);
+    $check_response = $client->autenticate($response["id_transaction"], AUTHENTICATION["authenticate_check"]);
     var_dump($check_response);
-    $delete_response =$client->autenticate_delete($response["id_transaction"]);
+    $delete_response =$client->autenticate($response["id_transaction"], AUTHENTICATION["authenticate_delete"]);
     var_dump($delete_response);
 
 
