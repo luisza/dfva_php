@@ -16,11 +16,13 @@ Las opciones `PUBLIC_CERTIFICATE, SERVER_PUBLIC_KEY, INSTITUTION_CODE, PRIVATE_K
 Requiere php-curl para enviar peticiones.
 
 .. code:: sh
+
     sudo apt install php7.x php-curl
 
 En el settings.php se encuentra una constante llamada LOG_PATH que contiene el path hacia los logs, puedes cambiarlo a lo que ocupas sino corra el siguiente comando
 
 .. code:: sh
+
     sudo touch /var/log/dfva_php.log
     sudo chmod 666 /var/log/dfva_php.log
 
@@ -101,7 +103,7 @@ Si se desea validar un documento
     var_dump($response_validate);
 
 Pruebas Unitarias
-################
+###################
 
 Las pruebas unitarias se hacen con phpunit versión 8.1(Por lo tanto se debe usar php7.x para correrlas).
 Use el siguiente comando para probar que el framework
@@ -118,8 +120,9 @@ Es común hacer el archivo PHAR un ejecutable, utilizando
     chmod +x phpunit-8.1.phar
     ./phpunit-8.1.phar --version
 
-Si deseas correr todas las pruebas ejecute el siguientes comandos.
+Despues de hacer el PHAR un ejecutable, si deseas correr todas las pruebas ejecute el siguientes comandos.
 
 .. code:: sh
+
     chmod +x tests.sh
     ./tests.sh

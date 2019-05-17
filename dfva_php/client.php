@@ -125,6 +125,9 @@ class DfvaClientInternal {
             'request_datetime'=> date(Settings::getDateFormat())
           ];
           $data = json_encode ($data);
+          $log = sprintf("[%s] [%s] [%s] Data sign: %s", date("d-m-Y h:m:s"),
+                   __FILE__, 'DEBUG', $data).PHP_EOL;
+          error_log($log, 3, FILE_PATH);
           $edata=$this->crypt->encrypt($data);
           $hashsum = $this->crypt->get_hash_sum($edata);
 
@@ -136,11 +139,17 @@ class DfvaClientInternal {
   }
 
   public function sign_check($code){
+      $log = sprintf("[%s] [%s] [%s] Check sign: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'INFO', $code).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
       $data = json_encode ([
                   'institution'=> Settings::getInstitutionCode(),
                   'notification_url'=> Settings::getUrlNotify(),
                   'request_datetime'=> date(Settings::getDateFormat()),
       ]);
+      $log = sprintf("[%s] [%s] [%s] Data Check sign: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $data).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
 
       $edata=$this->crypt->encrypt($data);
       $hashsum = $this->crypt->get_hash_sum($edata);
@@ -154,12 +163,17 @@ class DfvaClientInternal {
  }
 
   public function sign_delete($code){
+      $log = sprintf("[%s] [%s] [%s] Delete sign: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'INFO', $code).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
       $data = json_encode ([
                   'institution'=> Settings::getInstitutionCode(),
                   'notification_url'=> Settings::getUrlNotify(),
                   'request_datetime'=> date(Settings::getDateFormat()),
-                  
       ]);
+      $log = sprintf("[%s] [%s] [%s] Data Delete sign: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $data).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
 
       $edata=$this->crypt->encrypt($data);
       $hashsum = $this->crypt->get_hash_sum($edata);    
@@ -170,11 +184,17 @@ class DfvaClientInternal {
       $url=str_replace("%s", strval($code),  $url);
       $result = $this->send_post($url, $this->params);
       $datar=$this->crypt->decrypt($result);
-      
+      $log = sprintf("[%s] [%s] [%s] Decrypted Delete sign: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $datar).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
+
       return isset($datar['result']) ? $datar['result'] : False;
  }
 
   public function validate($document, $type, $format=null){
+      $log = sprintf("[%s] [%s] [%s] Validate: %s %s", date("d-m-Y h:m:s"),
+              __FILE__, 'INFO', $type, $format).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
       date_default_timezone_set(Settings::getTimezone());
       $data = [
                   'institution'=> Settings::getInstitutionCode(),
@@ -189,6 +209,9 @@ class DfvaClientInternal {
 
       print_r($data);
       $data =json_encode($data);
+      $log = sprintf("[%s] [%s] [%s] Data Validate: %s %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $data).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
       $edata=$this->crypt->encrypt($data);
       $hashsum = $this->crypt->get_hash_sum($edata);    
 
@@ -202,11 +225,18 @@ class DfvaClientInternal {
       $url= Settings::getDfvaServerUrl() .$url;
 
       $result = $this->send_post($url, $this->params);
-      return $this->crypt->decrypt($result);
+      $data = $this->crypt->decrypt($result);
+      $log = sprintf("[%s] [%s] [%s] Decrypted Validate: %s %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $data).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
+      return $data;
       
   }
 
   public function is_suscriptor_connected($identification){
+      $log = sprintf("[%s] [%s] [%s] Suscriptor connected: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'INFO', $identification).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
      date_default_timezone_set(Settings::getTimezone());
       $data = [
                   'institution'=> Settings::getInstitutionCode(),
@@ -216,11 +246,17 @@ class DfvaClientInternal {
                   
       ];
       $data =json_encode($data);
+      $log = sprintf("[%s] [%s] [%s] Suscriptor connected: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $data).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
       $edata=$this->crypt->encrypt($data);
       $hashsum = $this->crypt->get_hash_sum($edata);
       $this->setParams($hashsum, $edata);
       $url= Settings::getDfvaServerUrl() . Settings::getSuscriptorConnected();
       $datar = $this->send_post($url, $this->params);
+      $log = sprintf("[%s] [%s] [%s] Recieved Suscriptor connected: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $datar).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
       return isset($datar['is_connected']) ? $datar['is_connected'] : False;
   }
 }
@@ -257,6 +293,9 @@ class DfvaClient extends DfvaClientInternal{
         try {
           $dev=parent::authentication($identification, AUTHENTICATION["authenticate"]);
         } catch (Exception $e) {
+            $log = sprintf("[%s] [%s] [%s] Authenticate: %s %s", date("d-m-Y h:m:s"),
+                    __FILE__, 'ERROR', $e, "authenticate").PHP_EOL;
+            error_log($log, 3, FILE_PATH);
           $dev=$this->error_sign_auth_data ;
         }
         if($dev==null) $dev=$this->error_sign_auth_data ;
@@ -266,6 +305,9 @@ class DfvaClient extends DfvaClientInternal{
         try{
           $dev=parent::authentication($code, AUTHENTICATION["authenticate_check"]);
         } catch (Exception $e) {
+            $log = sprintf("[%s] [%s] [%s] Authenticate: %s %s", date("d-m-Y h:m:s"),
+                    __FILE__, 'ERROR', $e, "authenticate_check").PHP_EOL;
+            error_log($log, 3, FILE_PATH);
           $dev=$this->error_sign_auth_data ;
         }
         if($dev==null) $dev=$this->error_sign_auth_data ;
@@ -276,6 +318,9 @@ class DfvaClient extends DfvaClientInternal{
         try{
            $dev= parent::authentication($code, AUTHENTICATION["authenticate_delete"]);
          } catch (Exception $e) {
+            $log = sprintf("[%s] [%s] [%s] Authenticate: %s %s", date("d-m-Y h:m:s"),
+                    __FILE__, 'ERROR', $e, "authenticate_delete").PHP_EOL;
+            error_log($log, 3, FILE_PATH);
            $dev=False;
         }
         if($dev==null) $dev=False ;
@@ -302,6 +347,9 @@ class DfvaClient extends DfvaClientInternal{
         try{
           $dev=parent::sign($identification, $document, $resume, $format=$_format);
         } catch (Exception $e) {
+            $log = sprintf("[%s] [%s] [%s] Sign: %s", date("d-m-Y h:m:s"),
+                    __FILE__, 'ERROR', $e).PHP_EOL;
+            error_log($log, 3, FILE_PATH);
           $dev=$this->error_sign_auth_data ;
         }
       if($dev==null) $dev=$this->error_sign_auth_data ;
@@ -312,6 +360,9 @@ class DfvaClient extends DfvaClientInternal{
         try{
           $dev=parent::sign_check($code);
         } catch (Exception $e) {
+            $log = sprintf("[%s] [%s] [%s] Sign check: %s", date("d-m-Y h:m:s"),
+                    __FILE__, 'ERROR', $e).PHP_EOL;
+            error_log($log, 3, FILE_PATH);
           $dev=$this->error_sign_auth_data ;
         }
         if($dev==null) $dev=$this->error_sign_auth_data ;
@@ -321,6 +372,9 @@ class DfvaClient extends DfvaClientInternal{
         try{
           $dev=parent::sign_delete($code);
         } catch (Exception $e) {
+            $log = sprintf("[%s] [%s] [%s] Sign delete: %s", date("d-m-Y h:m:s"),
+                    __FILE__, 'ERROR', $e).PHP_EOL;
+            error_log($log, 3, FILE_PATH);
            $dev=False;
         }
       if($dev==null) $dev=False ;
@@ -340,6 +394,9 @@ class DfvaClient extends DfvaClientInternal{
       try{
          $dev=parent::validate($document, $type, $format=$_format);
       } catch (Exception $e) {
+          $log = sprintf("[%s] [%s] [%s] Validate: %s", date("d-m-Y h:m:s"),
+                  __FILE__, 'ERROR', $e).PHP_EOL;
+          error_log($log, 3, FILE_PATH);
         $dev=$this->error_validate_data;
       }
       if($dev==null) $dev=$this->error_validate_data;
@@ -349,6 +406,9 @@ class DfvaClient extends DfvaClientInternal{
       try{
         $dev=parent::is_suscriptor_connected($identification);
       } catch (Exception $e) {
+          $log = sprintf("[%s] [%s] [%s] Is Suscriptor Connected: %s", date("d-m-Y h:m:s"),
+                  __FILE__, 'ERROR', $e).PHP_EOL;
+          error_log($log, 3, FILE_PATH);
         $dev=False ;
       }
       if($dev==null) $dev=False;
