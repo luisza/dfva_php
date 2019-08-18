@@ -1,5 +1,4 @@
-<?php 
-
+<?php namespace App\dfva_php;
 require_once dirname(__FILE__).'/crypto.php';
 require_once dirname(__FILE__).'/settings.php';
 
@@ -13,16 +12,24 @@ class DfvaClientInternal {
     private $crypt;
     private $params;
 
-   function __construct() {
-        $this->crypt=new dfva_crypto();
-        date_default_timezone_set(Settings::getTimezone());
+   function __construct($settings=null) {
+
+        if($settings == null){
+          $this->settings = new Settings;
+          $this->settings->load();
+        }else{
+          $this->settings=$settings;
+        }
+
+        $this->crypt=new dfva_crypto($this->settings);
+        date_default_timezone_set($this->settings->getTimezone());
         $this->params = [
            "data_hash"=> null,
-           "algorithm"=> Settings::getAlgorithm(),
+           "algorithm"=> $this->settings->getAlgorithm(),
            "public_certificate"=> $this->crypt->get_public_certificate_pem(),
-           'institution'=> Settings::getInstitutionCode(),
+           'institution'=> $this->settings->getInstitutionCode(),
            "data"=> null,
-           'encrypt_method'=>Settings::getCipher()
+           'encrypt_method'=>$this->settings->getCipher()
         ];
    }
 
@@ -54,7 +61,7 @@ class DfvaClientInternal {
       $hashsum = $this->crypt->get_hash_sum($edata);
       $this->setParams($hashsum, $edata);
 
-      $url=Settings::getDfvaServerUrl() . $this->getURI($action, $identification);
+      $url=$this->settings->getDfvaServerUrl() . $this->getURI($action, $identification);
       $result = $this->send_post($url, $this->params);
       $result_decrypted = $this->crypt->decrypt($result);
       $log = sprintf("[%s] [%s] [%s] Decrypted authenticate: %s", date("d-m-Y h:m:s"),
@@ -74,11 +81,11 @@ class DfvaClientInternal {
   private function getURI($action, $identification=null){
        switch ($action){
            case AUTHENTICATION["authenticate"]:
-               return Settings::getAuthenticateInstitution();
+               return $this->settings->getAuthenticateInstitution();
            case AUTHENTICATION["authenticate_check"]:
-               return sprintf(Settings::getCheckAuthenticateInstitution(), $identification);
+               return sprintf($this->settings->getCheckAuthenticateInstitution(), $identification);
            case AUTHENTICATION["authenticate_delete"]:
-               return sprintf(Settings::getAuthenticateDelete(), $identification);
+               return sprintf($this->settings->getAuthenticateDelete(), $identification);
            default:
                return null;
        }
@@ -88,18 +95,18 @@ class DfvaClientInternal {
        switch ($action){
            case AUTHENTICATION["authenticate"]:
                return json_encode ([
-                  'institution'=> Settings::getInstitutionCode(),
-                  'notification_url'=> Settings::getUrlNotify(),
+                  'institution'=> $this->settings->getInstitutionCode(),
+                  'notification_url'=> $this->settings->getUrlNotify(),
                   'identification'=> $identification,
-                  'request_datetime'=> date(Settings::getDateFormat()),
+                  'request_datetime'=> date($this->settings->getDateFormat()),
 
               ]);
            case AUTHENTICATION["authenticate_check"]:
            case AUTHENTICATION["authenticate_delete"]:
                return $data = json_encode ([
-                  'institution'=> Settings::getInstitutionCode(),
-                  'notification_url'=> Settings::getUrlNotify(),
-                  'request_datetime'=> date(Settings::getDateFormat()),
+                  'institution'=> $this->settings->getInstitutionCode(),
+                  'notification_url'=> $this->settings->getUrlNotify(),
+                  'request_datetime'=> date($this->settings->getDateFormat()),
 
               ]);
            default:
@@ -109,22 +116,29 @@ class DfvaClientInternal {
 
 
  public function sign($identification, $document, $resume,
-          $format='xml_cofirma'){
+          $format='xml_cofirma', $reason=null, $place=null){
          $log = sprintf("[%s] [%s] [%s] Info sign: %s %s %s", date("d-m-Y h:m:s"),
                  __FILE__, 'DEBUG', $identification, $resume, $format).PHP_EOL;
          error_log($log, 3, FILE_PATH);
           $data = [
-            'institution'=> Settings::getInstitutionCode(),
-            'notification_url'=> Settings::getUrlNotify(),
+            'institution'=> $this->settings->getInstitutionCode(),
+            'notification_url'=> $this->settings->getUrlNotify(),
             'document'=> $document,
             'format'=> $format,
-            'algorithm_hash'=> Settings::getAlgorithm(),
+            'algorithm_hash'=> $this->settings->getAlgorithm(),
             'document_hash'=> $this->crypt->get_hash_sum($document),
             'identification'=> $identification,
             'resumen'=> $resume,
-            'request_datetime'=> date(Settings::getDateFormat())
+            'request_datetime'=> date($this->settings->getDateFormat())
           ];
-          $data = json_encode ($data);
+
+          if ($reason != null){
+            $data['reason'] = $reason;
+          }
+          if ($place != null){
+            $data['place'] = $place;
+          }
+          $data = json_encode($data);
           $log = sprintf("[%s] [%s] [%s] Data sign: %s", date("d-m-Y h:m:s"),
                    __FILE__, 'DEBUG', $data).PHP_EOL;
           error_log($log, 3, FILE_PATH);
@@ -133,7 +147,7 @@ class DfvaClientInternal {
 
           $this->setParams($hashsum, $edata);
 
-          $url=Settings::getDfvaServerUrl() . Settings::getSignInstitution();
+          $url=$this->settings->getDfvaServerUrl() . $this->settings->getSignInstitution();
           $result = $this->send_post($url, $this->params);
           return $this->crypt->decrypt($result);
   }
@@ -143,9 +157,9 @@ class DfvaClientInternal {
               __FILE__, 'INFO', $code).PHP_EOL;
       error_log($log, 3, FILE_PATH);
       $data = json_encode ([
-                  'institution'=> Settings::getInstitutionCode(),
-                  'notification_url'=> Settings::getUrlNotify(),
-                  'request_datetime'=> date(Settings::getDateFormat()),
+                  'institution'=> $this->settings->getInstitutionCode(),
+                  'notification_url'=> $this->settings->getUrlNotify(),
+                  'request_datetime'=> date($this->settings->getDateFormat()),
       ]);
       $log = sprintf("[%s] [%s] [%s] Data Check sign: %s", date("d-m-Y h:m:s"),
               __FILE__, 'DEBUG', $data).PHP_EOL;
@@ -156,7 +170,7 @@ class DfvaClientInternal {
 
       $this->setParams($hashsum, $edata);
 
-      $url=Settings::getDfvaServerUrl() . Settings::getCheckSignInstitution();
+      $url=$this->settings->getDfvaServerUrl() . $this->settings->getCheckSignInstitution();
       $url=str_replace("%s", strval($code),  $url);
       $result = $this->send_post($url, $this->params);
       return $this->crypt->decrypt($result);
@@ -167,9 +181,9 @@ class DfvaClientInternal {
               __FILE__, 'INFO', $code).PHP_EOL;
       error_log($log, 3, FILE_PATH);
       $data = json_encode ([
-                  'institution'=> Settings::getInstitutionCode(),
-                  'notification_url'=> Settings::getUrlNotify(),
-                  'request_datetime'=> date(Settings::getDateFormat()),
+                  'institution'=> $this->settings->getInstitutionCode(),
+                  'notification_url'=> $this->settings->getUrlNotify(),
+                  'request_datetime'=> date($this->settings->getDateFormat()),
       ]);
       $log = sprintf("[%s] [%s] [%s] Data Delete sign: %s", date("d-m-Y h:m:s"),
               __FILE__, 'DEBUG', $data).PHP_EOL;
@@ -180,7 +194,7 @@ class DfvaClientInternal {
 
       $this->setParams($hashsum, $edata);
 
-      $url=Settings::getDfvaServerUrl() . Settings::getSignDelete();
+      $url=$this->settings->getDfvaServerUrl() . $this->settings->getSignDelete();
       $url=str_replace("%s", strval($code),  $url);
       $result = $this->send_post($url, $this->params);
       $datar=$this->crypt->decrypt($result);
@@ -195,12 +209,12 @@ class DfvaClientInternal {
       $log = sprintf("[%s] [%s] [%s] Validate: %s %s", date("d-m-Y h:m:s"),
               __FILE__, 'INFO', $type, $format).PHP_EOL;
       error_log($log, 3, FILE_PATH);
-      date_default_timezone_set(Settings::getTimezone());
+      date_default_timezone_set($this->settings->getTimezone());
       $data = [
-                  'institution'=> Settings::getInstitutionCode(),
-                  'notification_url'=> Settings::getUrlNotify(),
+                  'institution'=> $this->settings->getInstitutionCode(),
+                  'notification_url'=> $this->settings->getUrlNotify(),
                   'document'=> $document,
-                  'request_datetime'=> date(Settings::getDateFormat()),
+                  'request_datetime'=> date($this->settings->getDateFormat()),
                   
       ];
       if($format != null){
@@ -218,11 +232,11 @@ class DfvaClientInternal {
       $this->setParams($hashsum, $edata);
 
       if ($type == 'certificate'){
-          $url = Settings::getValidateCertificate();
+          $url = $this->settings->getValidateCertificate();
       }else{
-          $url = Settings::getValidateDocument();
+          $url = $this->settings->getValidateDocument();
       }
-      $url= Settings::getDfvaServerUrl() .$url;
+      $url= $this->settings->getDfvaServerUrl() .$url;
 
       $result = $this->send_post($url, $this->params);
       $data = $this->crypt->decrypt($result);
@@ -237,12 +251,12 @@ class DfvaClientInternal {
       $log = sprintf("[%s] [%s] [%s] Suscriptor connected: %s", date("d-m-Y h:m:s"),
               __FILE__, 'INFO', $identification).PHP_EOL;
       error_log($log, 3, FILE_PATH);
-     date_default_timezone_set(Settings::getTimezone());
+     date_default_timezone_set($this->settings->getTimezone());
       $data = [
-                  'institution'=> Settings::getInstitutionCode(),
-                  'notification_url'=> Settings::getUrlNotify(),
+                  'institution'=> $this->settings->getInstitutionCode(),
+                  'notification_url'=> $this->settings->getUrlNotify(),
                   'identification'=> $identification,
-                  'request_datetime'=> date(Settings::getDateFormat()),
+                  'request_datetime'=> date($this->settings->getDateFormat()),
                   
       ];
       $data =json_encode($data);
@@ -252,7 +266,7 @@ class DfvaClientInternal {
       $edata=$this->crypt->encrypt($data);
       $hashsum = $this->crypt->get_hash_sum($edata);
       $this->setParams($hashsum, $edata);
-      $url= Settings::getDfvaServerUrl() . Settings::getSuscriptorConnected();
+      $url= $this->settings->getDfvaServerUrl() . $this->settings->getSuscriptorConnected();
       $datar = $this->send_post($url, $this->params);
       $log = sprintf("[%s] [%s] [%s] Recieved Suscriptor connected: %s", date("d-m-Y h:m:s"),
               __FILE__, 'DEBUG', $datar).PHP_EOL;
@@ -264,7 +278,7 @@ class DfvaClientInternal {
 class DfvaClient extends DfvaClientInternal{
     private $error_sign_auth_data;
     private $error_validate_data;
-    function __construct(){
+    function __construct($settings=null){
       
       $this->error_sign_auth_data = ["code"=> "N/D",
 			      "status"=> 2,
@@ -284,7 +298,7 @@ class DfvaClient extends DfvaClientInternal{
       "status_text"=> "Problema de comunicación interna"];
 
 
-      parent::__construct();
+      parent::__construct($settings);
 
     }
 
@@ -327,9 +341,9 @@ class DfvaClient extends DfvaClientInternal{
       return $dev;
     }
     public function sign($identification, $document, $resume, 
-              $_format='xml_cofirma'){
+              $_format='xml_cofirma', $reason=null, $place=null){
 
-        if (!in_array($_format, Settings::getSupportedSignFormat()))
+        if (!in_array($_format, $this->settings->getSupportedSignFormat()))
             return [
               "code"=> "N/D",
 		          "status"=> 12,
@@ -341,11 +355,12 @@ class DfvaClient extends DfvaClientInternal{
 		          "received_notification"=> true,
 		          "duration"=> 0,
               "status_text"=> "Formato de documento inválido, posibles:".implode(
-                            ",", Settings::getSupportedSignFormat())
+                            ",", $this->settings->getSupportedSignFormat())
               ];
 
         try{
-          $dev=parent::sign($identification, $document, $resume, $format=$_format);
+          $dev=parent::sign($identification, $document, $resume, $format=$_format,
+          $reason=$reason, $place=$place);
         } catch (Exception $e) {
             $log = sprintf("[%s] [%s] [%s] Sign: %s", date("d-m-Y h:m:s"),
                     __FILE__, 'ERROR', $e).PHP_EOL;
@@ -381,13 +396,13 @@ class DfvaClient extends DfvaClientInternal{
       return $dev;
     }
     public function validate($document, $type, $_format=null){
-        if ( $_format!=null && !in_array($_format, Settings::getSupportedValidateFormat()))
+        if ( $_format!=null && !in_array($_format, $this->settings->getSupportedValidateFormat()))
             return ["code"=> "N/D",
 			              "status"=> 14,
 			              "identification"=>null,
 			              "received_notification"=>null,
                     "status_text"=> "Formato inválido posibles: ".implode(
-                            ",", Settings::getSupportedValidateFormat())
+                            ",", $this->settings->getSupportedValidateFormat())
                     ];
 
 

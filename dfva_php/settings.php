@@ -1,137 +1,276 @@
-<?php
+<?php namespace App\dfva_php;
+
 class Settings {
-    private static $timezone = 'America/Costa_Rica';
-    private static $date_format = "Y-m-d h:m:s";
-    private static $algorithm = 'sha512';
-    private static $dfva_server_url = 'http://localhost:8000';
-    private static $authenticate_institution = '/authenticate/institution/';
-    private static $check_authenticate_institution = '/authenticate/%s/institution_show/';
-    private static $authenticate_delete = '/authenticate/%s/institution_delete/';
-    private static $sign_institution = '/sign/institution/';
-    private static $check_sign_institution = '/sign/%s/institution_show/';
-    private static $sign_delete = '/sign/%s/institution_delete/';
-    private static $validate_certificate = '/validate/institution_certificate/';
-    private static $validate_document = '/validate/institution_document/';
-    private static $suscriptor_connected = '/validate/institution_suscriptor_connected/';
-    private static $supported_sign_format = ['xml_cofirma','xml_contrafirma','odf','msoffice', 'pdf'];
-    private static $supported_validate_format = ['certificate','cofirma','contrafirma','odf','msoffice', 'pdf'];
-    private static $public_certificate = 'cert.crt';
-    private static $server_public_key = 'cert_pub.key';
-    private static $institution_code = '8e888c8c-75f7-4933-bc6f-f10132345d70';
-    private static $private_key = 'cert.key';
-    private static $url_notify = 'N/D';
-    private static $cipher = "aes-256-cfb";
-    private static $session_key_size = 32;
+    private $timezone = 'America/Costa_Rica';
+    private $date_format = "Y-m-d h:m:s";
+    private $algorithm = 'sha512';
+    private $dfva_server_url = 'http://localhost:8000';
+    private $authenticate_institution = '/authenticate/institution/';
+    private $check_authenticate_institution = '/authenticate/%s/institution_show/';
+    private $authenticate_delete = '/authenticate/%s/institution_delete/';
+    private $sign_institution = '/sign/institution/';
+    private $check_sign_institution = '/sign/%s/institution_show/';
+    private $sign_delete = '/sign/%s/institution_delete/';
+    private $validate_certificate = '/validate/institution_certificate/';
+    private $validate_document = '/validate/institution_document/';
+    private $suscriptor_connected = '/validate/institution_suscriptor_connected/';
+    private $supported_sign_format = ['xml_cofirma','xml_contrafirma','odf','msoffice', 'pdf'];
+    private $supported_validate_format = ['certificate','cofirma','contrafirma','odf','msoffice', 'pdf'];
+    private $public_certificate = ''; // cert.crt
+    private $server_public_key = ''; // cert_pub.key
+    private $institution_code = '';
+    private $private_key = ''; // cert.key
+    private $private_key_passphrase = '';
+    private $url_notify = 'N/D';
+    private $cipher = "aes-256-cfb";
+    private $session_key_size = 32;
+    private $homePath = null;
 
-    public static function getAlgorithm()
+    public  function getAlgorithm()
     {
-        return self::$algorithm;
+        return $this->algorithm;
     }
 
-    public static function getAuthenticateDelete()
-    {
-        return self::$authenticate_delete;
+    private function get_home_folder(){
+        if($this->homePath != null){
+            return $this->homePath;
+        }
+        
+        if(isset($_SERVER['HOME'])) {
+            $result = $_SERVER['HOME'];
+        } else {
+            $result = getenv("HOME");
+        }
+    
+        if(empty($result) && function_exists('exec')) {
+            if(strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+                $result = exec("echo %userprofile%");
+            } else {
+                $result = exec("echo ~");
+            }
+        }
+
+        $this->homePath = $result. DIRECTORY_SEPARATOR .".dfva_php";
+        return $this->homePath;
     }
 
-    public static function getAuthenticateInstitution()
-    {
-        return self::$authenticate_institution;
+
+    public function SetHomePath($homePath){
+        $this->homePath = $homePath;
     }
 
-    public static function getCheckAuthenticateInstitution()
-    {
-        return self::$check_authenticate_institution;
+    public function save(){
+        $data = json_encode(['timezone' => $this->timezone,
+        'date_format' => $this->date_format,
+        'algorithm' => $this->algorithm,
+        'dfva_server_url' => $this->dfva_server_url,
+        'authenticate_institution' => $this->authenticate_institution,
+        'check_authenticate_institution' => $this->check_authenticate_institution,
+        'authenticate_delete' => $this->authenticate_delete,
+        'sign_institution' => $this->sign_institution,
+        'check_sign_institution' => $this->check_sign_institution,
+        'sign_delete' => $this->sign_delete,
+        'validate_certificate' => $this->validate_certificate,
+        'validate_document' => $this->validate_document,
+        'suscriptor_connected' => $this->suscriptor_connected,
+        'supported_sign_format' => $this->supported_sign_format,
+        'supported_validate_format' => $this->supported_validate_format,
+        'public_certificate' => $this->getPublicCertificate(),
+        'server_public_key' => $this->getServerPublicKey(),
+        'institution_code' => $this->institution_code,
+        'private_key' => $this->getPrivateKey(),
+        'private_key_passphrase' => $this->private_key_passphrase,
+        'url_notify' => $this->url_notify,
+        'cipher' => $this->cipher,
+        'session_key_size' => $this->session_key_size], JSON_PRETTY_PRINT);
+
+
+        if (!file_exists($this->get_home_folder())) {
+            mkdir($this->get_home_folder(), 0750, true);
+        }
+
+        if(file_put_contents($this->get_config_filename(), $data)) {
+	        return true;
+        }
+        return false;
     }
 
-    public static function getCheckSignInstitution()
-    {
-        return self::$check_sign_institution;
+    public function copy($other_settings){
+        $this->timezone = $other_settings['timezone']; 
+        $this->date_format = $other_settings['date_format']; 
+        $this->algorithm = $other_settings['algorithm']; 
+        $this->dfva_server_url = $other_settings['dfva_server_url']; 
+        $this->authenticate_institution = $other_settings['authenticate_institution']; 
+        $this->check_authenticate_institution = $other_settings['check_authenticate_institution']; 
+        $this->authenticate_delete = $other_settings['authenticate_delete']; 
+        $this->sign_institution = $other_settings['sign_institution']; 
+        $this->check_sign_institution = $other_settings['check_sign_institution']; 
+        $this->sign_delete = $other_settings['sign_delete']; 
+        $this->validate_certificate = $other_settings['validate_certificate']; 
+        $this->validate_document = $other_settings['validate_document']; 
+        $this->suscriptor_connected = $other_settings['suscriptor_connected']; 
+        $this->supported_sign_format = $other_settings['supported_sign_format']; 
+        $this->supported_validate_format = $other_settings['supported_validate_format']; 
+        $this->public_certificate = $other_settings['public_certificate']; 
+        $this->server_public_key = $other_settings['server_public_key']; 
+        $this->institution_code = $other_settings['institution_code']; 
+        $this->private_key = $other_settings['private_key']; 
+        $this->private_key_passphrase = $other_settings['private_key_passphrase']; 
+        $this->url_notify = $other_settings['url_notify']; 
+        $this->cipher = $other_settings['cipher']; 
+        $this->session_key_size = $other_settings['session_key_size'];
     }
 
-    public static function getCipher()
-    {
-        return self::$cipher;
+
+    public function load(){
+        $config_file=$this->get_config_filename();
+
+        if (!file_exists($config_file)){
+            $this->save();
+        }
+
+        $jsondata = file_get_contents($config_file);
+  	    // converts json data into array
+        $arr_data = json_decode($jsondata, true);
+        $this->copy($arr_data);
     }
 
-    public static function getDateFormat()
-    {
-        return self::$date_format;
+    private function get_config_filename(){
+        return $this->get_home_folder(). DIRECTORY_SEPARATOR ."dfva_settings.json";
     }
 
-    public static function getDfvaServerUrl()
+    public  function getAuthenticateDelete()
     {
-        return self::$dfva_server_url;
+        return $this->authenticate_delete;
     }
 
-    public static function getInstitutionCode()
+    public  function getAuthenticateInstitution()
     {
-        return self::$institution_code;
+        return $this->authenticate_institution;
     }
 
-    public static function getPrivateKey()
+    public  function getCheckAuthenticateInstitution()
     {
-        return dirname(__FILE__)."/".self::$private_key;
+        return $this->check_authenticate_institution;
     }
 
-    public static function getPublicCertificate()
+    public  function getCheckSignInstitution()
     {
-        return dirname(__FILE__)."/".self::$public_certificate;
+        return $this->check_sign_institution;
     }
 
-    public static function getServerPublicKey()
+    public  function getCipher()
     {
-        return dirname(__FILE__)."/".self::$server_public_key;
+        return $this->cipher;
     }
 
-    public static function getSessionKeySize()
+    public  function getDateFormat()
     {
-        return self::$session_key_size;
+        return $this->date_format;
     }
 
-    public static function getSignDelete()
+    public  function getDfvaServerUrl()
     {
-        return self::$sign_delete;
+        return $this->dfva_server_url;
     }
 
-    public static function getSignInstitution()
+    public  function getInstitutionCode()
     {
-        return self::$sign_institution;
+        return $this->institution_code;
     }
 
-    public static function getSupportedSignFormat()
+    public  function getPrivateKey()
     {
-        return self::$supported_sign_format;
+        if($this->private_key == ''){
+            $this->private_key = $this->get_home_folder().DIRECTORY_SEPARATOR.'private_key.pem';
+        }
+        return  $this->private_key;
     }
 
-    public static function getSupportedValidateFormat()
+    public  function getPublicCertificate()
     {
-        return self::$supported_validate_format;
+        if($this->public_certificate == ''){
+            $this->public_certificate = $this->get_home_folder().DIRECTORY_SEPARATOR.'certificate.pem';
+        }
+
+        return  $this->public_certificate;
     }
 
-    public static function getSuscriptorConnected()
+    public  function getServerPublicKey()
     {
-        return self::$suscriptor_connected;
+        if($this->server_public_key == ''){
+            $this->server_public_key = $this->get_home_folder().DIRECTORY_SEPARATOR.'public_key.pem';
+        }
+        return  $this->server_public_key;
     }
 
-    public static function getTimezone()
+    public  function getSessionKeySize()
     {
-        return self::$timezone;
+        return $this->session_key_size;
     }
 
-    public static function getUrlNotify()
+    public  function getSignDelete()
     {
-        return self::$url_notify;
+        return $this->sign_delete;
     }
 
-    public static function getValidateCertificate()
+    public  function getSignInstitution()
     {
-        return self::$validate_certificate;
+        return $this->sign_institution;
     }
 
-    public static function getValidateDocument()
+    public  function getSupportedSignFormat()
     {
-        return self::$validate_document;
+        return $this->supported_sign_format;
     }
+
+    public  function getSupportedValidateFormat()
+    {
+        return $this->supported_validate_format;
+    }
+
+    public  function getSuscriptorConnected()
+    {
+        return $this->suscriptor_connected;
+    }
+
+    public  function getTimezone()
+    {
+        return $this->timezone;
+    }
+
+    public  function getUrlNotify()
+    {
+        return $this->url_notify;
+    }
+
+    public  function getValidateCertificate()
+    {
+        return $this->validate_certificate;
+    }
+
+    public  function getValidateDocument()
+    {
+        return $this->validate_document;
+    }
+
+    public function __get($name)
+    {
+         
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
+
+        $trace = debug_backtrace();
+        trigger_error(
+            'Undefined property via __get(): ' . $name .
+            ' in ' . $trace[0]['file'] .
+            ' on line ' . $trace[0]['line'],
+            E_USER_NOTICE);
+        return null;
+    }
+
+
 }
 
 const FILE_PATH = '/var/log/dfva_php.log';

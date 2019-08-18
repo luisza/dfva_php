@@ -1,23 +1,25 @@
-<?php
-
-require_once 'settings.php';
+<?php namespace App\dfva_php;
 
 class dfva_crypto {    
-  function __construct() {
+  function __construct($settings) {
+    $this->settings=$settings;
   }
   public function get_hash_sum($data){
-    return hash(Settings::getAlgorithm(), $data);
+    return hash($this->settings->getAlgorithm(), $data);
   }
   public function get_public_certificate_pem(){
-     return file_get_contents(Settings::getPublicCertificate());
+     return file_get_contents($this->settings->getPublicCertificate());
   }
 
   private function get_private_key(){
-    return openssl_get_privatekey(file_get_contents(Settings::getPrivateKey()));
+    return openssl_get_privatekey(
+      file_get_contents($this->settings->getPrivateKey() ), 
+      $this->settings->private_key_passphrase
+    );
   }
 
   private function get_public_key(){
-    return openssl_pkey_get_public(file_get_contents(Settings::getServerPublicKey()));
+    return openssl_pkey_get_public(file_get_contents($this->settings->getServerPublicKey()));
   }
 
   private function get_private_key_size($key){
@@ -41,7 +43,7 @@ class dfva_crypto {
 
   public function decrypt($cipher_data, $as_str=true){
     $cipher_text = $cipher_data['data'];
-    $cipher=Settings::getCipher();
+    $cipher=$this->settings->getCipher();
     $stream = fopen('php://memory','r+');
     fwrite($stream, base64_decode($cipher_text));
     rewind($stream);
@@ -76,12 +78,12 @@ class dfva_crypto {
   public function encrypt($message){
       $public_key=$this->get_public_key();
       $stream = fopen('php://memory','rw');
-      $cipher= Settings::getCipher();
+      $cipher= $this->settings->getCipher();
       
       $ivlen = openssl_cipher_iv_length($cipher);
       $iv = openssl_random_pseudo_bytes($ivlen);
       $encrypted_session_key='';
-      $session_key=openssl_random_pseudo_bytes(Settings::getSessionKeySize());
+      $session_key=openssl_random_pseudo_bytes($this->settings->getSessionKeySize());
       # Encrypt the session key with the public RSA key
       openssl_public_encrypt($session_key, $encrypted_session_key, 
                               $public_key, OPENSSL_PKCS1_OAEP_PADDING);
