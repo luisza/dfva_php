@@ -199,7 +199,7 @@ class DfvaClientInternal {
       $result = $this->send_post($url, $this->params);
       $datar=$this->crypt->decrypt($result);
       $log = sprintf("[%s] [%s] [%s] Decrypted Delete sign: %s", date("d-m-Y h:m:s"),
-              __FILE__, 'DEBUG', $datar).PHP_EOL;
+              __FILE__, 'DEBUG', json_encode($datar)).PHP_EOL;
       error_log($log, 3, FILE_PATH);
 
       return isset($datar['result']) ? $datar['result'] : False;
