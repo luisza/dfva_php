@@ -209,6 +209,100 @@ class DfvaClientInternal {
       return isset($datar['result']) ? $datar['result'] : False;
  }
 
+ public function stamp($document, $format='xml_cofirma', $id_functionality=-1, $reason=null, $place=null, $eta=null){
+			  
+		  
+         $log = sprintf("[%s] [%s] [%s] Info sign: %d %s", date("d-m-Y h:m:s"),
+                 __FILE__, 'DEBUG', $id_functionality, $format).PHP_EOL;
+         error_log($log, 3, FILE_PATH);
+          $data = [
+            'institution'=> $this->settings->getInstitutionCode(),
+            'notification_url'=> $this->settings->getUrlNotify(),
+            'document'=> $document,
+            'format'=> $format,
+            'algorithm_hash'=> $this->settings->getAlgorithm(),
+            'document_hash'=> $this->crypt->get_hash_sum($document),
+            'request_datetime'=> date($this->settings->getDateFormat()),
+            'id_functionality' => $id_functionality
+          ];
+
+          if ($reason != null){
+            $data['reason'] = $reason;
+          }
+          if ($place != null){
+            $data['place'] = $place;
+          }
+          if ($eta != null){
+			   $data['eta'] = $eta;
+		  }
+          $data = json_encode($data);
+          $log = sprintf("[%s] [%s] [%s] Data stamp: %s", date("d-m-Y h:m:s"),
+                   __FILE__, 'DEBUG', $data).PHP_EOL;
+          error_log($log, 3, FILE_PATH);
+          $edata=$this->crypt->encrypt($data);
+          $hashsum = $this->crypt->get_hash_sum($edata);
+
+          $this->setParams($hashsum, $edata);
+
+          $url=$this->settings->getDfvaServerUrl() . $this->settings->getStampInstitution();
+          $result = $this->send_post($url, $this->params);
+          return $this->crypt->decrypt($result);
+  }
+
+  public function stamp_check($code){
+      $log = sprintf("[%s] [%s] [%s] Check stamp: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'INFO', $code).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
+      $data = json_encode ([
+                  'institution'=> $this->settings->getInstitutionCode(),
+                  'notification_url'=> $this->settings->getUrlNotify(),
+                  'request_datetime'=> date($this->settings->getDateFormat()),
+      ]);
+      $log = sprintf("[%s] [%s] [%s] Data Check sign: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $data).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
+
+      $edata=$this->crypt->encrypt($data);
+      $hashsum = $this->crypt->get_hash_sum($edata);
+
+      $this->setParams($hashsum, $edata);
+
+      $url=$this->settings->getDfvaServerUrl() . $this->settings->getCheckStampInstitution();
+      $url=str_replace("%s", strval($code),  $url);
+      $result = $this->send_post($url, $this->params);
+      return $this->crypt->decrypt($result);
+ }
+
+  public function stamp_delete($code){
+      $log = sprintf("[%s] [%s] [%s] Delete stamp: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'INFO', $code).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
+      $data = json_encode ([
+                  'institution'=> $this->settings->getInstitutionCode(),
+                  'notification_url'=> $this->settings->getUrlNotify(),
+                  'request_datetime'=> date($this->settings->getDateFormat()),
+      ]);
+      $log = sprintf("[%s] [%s] [%s] Data Delete stamp: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $data).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
+
+      $edata=$this->crypt->encrypt($data);
+      $hashsum = $this->crypt->get_hash_sum($edata);    
+
+      $this->setParams($hashsum, $edata);
+
+      $url=$this->settings->getDfvaServerUrl() . $this->settings->getStampDelete();
+      $url=str_replace("%s", strval($code),  $url);
+      $result = $this->send_post($url, $this->params);
+      $datar=$this->crypt->decrypt($result);
+      $log = sprintf("[%s] [%s] [%s] Decrypted Delete sign: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', json_encode($datar)).PHP_EOL;
+      error_log($log, 3, FILE_PATH);
+
+      return isset($datar['result']) ? $datar['result'] : False;
+ }
+
+
   public function validate($document, $type, $format=null){
       $log = sprintf("[%s] [%s] [%s] Validate: %s %s", date("d-m-Y h:m:s"),
               __FILE__, 'INFO', $type, $format).PHP_EOL;

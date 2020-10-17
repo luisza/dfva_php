@@ -11,6 +11,9 @@ class Settings {
     private $sign_institution = '/sign/institution/';
     private $check_sign_institution = '/sign/%s/institution_show/';
     private $sign_delete = '/sign/%s/institution_delete/';
+    private $stamp_institution = '/stamp/institution/';
+    private $check_stamp_institution = '/stamp/%s/institution_show/';
+    private $stamp_delete = '/stamp/%s/institution_delete/';
     private $validate_certificate = '/validate/institution_certificate/';
     private $validate_document = '/validate/institution_document/';
     private $suscriptor_connected = '/validate/institution_suscriptor_connected/';
@@ -70,6 +73,9 @@ class Settings {
         'sign_institution' => $this->sign_institution,
         'check_sign_institution' => $this->check_sign_institution,
         'sign_delete' => $this->sign_delete,
+        'stamp_institution' => $this->stamp_institution,
+        'check_stamp_institution' => $this->check_stamp_institution,
+        'stamp_delete' => $this->stamp_delete,
         'validate_certificate' => $this->validate_certificate,
         'validate_document' => $this->validate_document,
         'suscriptor_connected' => $this->suscriptor_connected,
@@ -106,6 +112,9 @@ class Settings {
         $this->sign_institution = $other_settings['sign_institution']; 
         $this->check_sign_institution = $other_settings['check_sign_institution']; 
         $this->sign_delete = $other_settings['sign_delete']; 
+        $this->stamp_institution = $other_settings['stamp_institution']; 
+        $this->check_stamp_institution = $other_settings['check_stamp_institution']; 
+        $this->stamp_delete = $other_settings['stamp_delete']; 
         $this->validate_certificate = $other_settings['validate_certificate']; 
         $this->validate_document = $other_settings['validate_document']; 
         $this->suscriptor_connected = $other_settings['suscriptor_connected']; 
@@ -157,6 +166,11 @@ class Settings {
     public  function getCheckSignInstitution()
     {
         return $this->check_sign_institution;
+    }
+
+    public  function getCheckStampInstitution()
+    {
+        return $this->check_stamp_institution;
     }
 
     public  function getCipher()
@@ -213,12 +227,20 @@ class Settings {
     {
         return $this->sign_delete;
     }
+    public  function getStampDelete()
+    {
+        return $this->stamp_delete;
+    }
 
     public  function getSignInstitution()
     {
         return $this->sign_institution;
     }
 
+    public  function getStampInstitution()
+    {
+        return $this->stamp_institution;
+    }
     public  function getSupportedSignFormat()
     {
         return $this->supported_sign_format;

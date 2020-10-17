@@ -41,6 +41,16 @@ const DOCUMENT_RESPONSE_TABLE = [
     '01-7788-9900'=> [0, '!', 0, 14]
 ];
 
+const DOCUMENT_STAMP_TABLE = [
+    '1000'=> [0, '=', 0, 0],
+    '1001'=> [1, '=', 0, 1],
+    '1004'=> [4, '=', 0, 4],
+    '1005'=> [5, '=', 0, 5],
+    '1007'=> [7, '=', 0, 7],
+    '1008'=> [8, '=', 0, 8]
+];
+
+
 const DOCUMENT_FORMATS = ['xml_cofirma', 'xml_contrafirma',
     'odf', 'msoffice', 'pdf'];
 
