@@ -35,6 +35,9 @@ class dfva_crypto {
                 "status"=> -2,
                 "identification"=>null,
                 "received_notification"=>Null,
+                "id_transaction" => 0,
+                "signed_document" => null,
+                "expiration_datetime" => null,
                 "status_text"=> "Problema: suma hash difiere"]);
         }
         

@@ -93,6 +93,7 @@ class DfvaClientInternal {
   }
 
   private function getAuthData($identification ,$action){
+	  settype($identification, 'string');
        switch ($action){
            case AUTHENTICATION["authenticate"]:
                return json_encode ([
@@ -118,6 +119,8 @@ class DfvaClientInternal {
 
  public function sign($identification, $document, $resume,
           $format='xml_cofirma', $reason=null, $place=null){
+			  
+		 settype($identification, 'string');
          $log = sprintf("[%s] [%s] [%s] Info sign: %s %s %s", date("d-m-Y h:m:s"),
                  __FILE__, 'DEBUG', $identification, $resume, $format).PHP_EOL;
          error_log($log, 3, FILE_PATH);

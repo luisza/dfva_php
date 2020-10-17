@@ -18,7 +18,7 @@ class AuthenticationTest extends TestCase
     {
         global $TIMEWAIT,  $AUTH_ALLOWED_TEST, $authclient, $authtransactions;
         foreach(AUTHENTICATION_RESPONSE_TABLE as $identification => $value){
-            if(!empty($AUTH_ALLOWED_TEST) && !in_array($identification, $AUTH_ALLOWED_TEST)){
+            if(!empty($AUTH_ALLOWED_TEST) && !in_array($identification,  array_keys($AUTH_ALLOWED_TEST))){
                 continue;
             }
             settype($identification, 'string');

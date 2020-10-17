@@ -6,26 +6,22 @@ require_once dirname(__FILE__).'/../client.php';
 
 $valclient = new dfva_php\DfvaClient;
 
-function pem_to_base64($certificate){
-    return utf8_decode(base64_encode($certificate));
-}
-
-
 $CERT_FUNC = function($x){
-    return pem_to_base64($x);
+	$pos_start = strpos($x, "-----BEGIN CERTIFICATE-----")+strlen("-----BEGIN CERTIFICATE-----\n");
+	$pos_end = strpos($x, "-----END CERTIFICATE-----");
+	$dev = substr($x, $pos_start, $pos_end-$pos_start);
+	$dev = str_replace('\n', '', $dev);
+    return $dev;
 };
 
-$base64_encode = function($str){
-    return base64_encode($str);
-};
 $path = "";
 $experated = [];
 
-class TestValidateCertificates extends TestCase{
+class TestValidateCertificates extends TestCase {
 
 	public static function setUpBeforeClass(): void {
         global $path, $experated;
-        $path = "dfva_testdocument/files/certs/";
+        $path = "../../../dfva_testdocument/files/certs/";
         $experated = [
             '01-0001-0002'=> ['ANA ROJAS PRUEBA', 0, True],
             '199887755443'=> ['NARCISO CASCANTE PRUEBA', 0, True],
@@ -51,13 +47,27 @@ class TestValidateCertificates extends TestCase{
             $this->assertSame($result['was_successfully'], $data[2]);
         }
     }
+    
+    function make_validation_b64($identification){
+        global $valclient, $base64_encode, $path, $experated;
+        $cert = read_files('crt',$doc_path=$path,
+            $post_read_fn = null,
+            $name=str_replace('-', '', $identification).'.');
+        $result = $valclient->validate($cert, 'certificate');
+        $data = $experated[$identification];
+        $this->assertSame($result['status'], $data[1]);
+        if($data[2]) {
+            $this->assertSame($result['full_name'], $data[0]);
+            $this->assertSame($result['was_successfully'], $data[2]);
+        }
+    }
 
     function test_0100010002(){
-        $this->make_validation("01-0001-0002");
+        $this->make_validation_b64("01-0001-0002");
     }
 
     function test_199887755443(){
-        $this->make_validation("199887755443");
+        $this->make_validation_b64("199887755443");
     }
 
     function test_0100010002exp(){
@@ -161,7 +171,7 @@ class TestValidateDocuments extends TestCase
         global $base64_encode, $valclient, $expected;
         $document = null;
         if(in_array($format, ['cofirma','contrafirma', 'pdf', 'odf', 'msoffice'])){
-            $document = utf8_decode(read_files($filename, "dfva_testdocument/files/", $post_read_fn=$base64_encode));
+            $document = utf8_decode(read_files($filename, "../../../dfva_testdocument/files/", $post_read_fn=$base64_encode));
         }else{
             $document = utf8_decode(read_files($filename));
         }
@@ -203,3 +213,5 @@ class TestValidateDocuments extends TestCase
         $this->do_check('pdf', 'pdf');
     }
 }
+
+

@@ -2,7 +2,6 @@
 
 
 use PHPUnit\Framework\TestCase;
-use dfva_php;
 require_once dirname(__FILE__).'/utils.php';
 require_once dirname(__FILE__).'/../client.php';
 
@@ -11,31 +10,38 @@ $transactions = array();
 
 $client = new dfva_php\DfvaClient;
 
-
-
-
 class TestDocumentReceived extends TestCase
 {
-    function load_signdocuments(){
-        global $DOCUMENT_RESPONSE_TABLE, $DOCUMENT_FORMATS, $ALLOWED_TEST, $client, $transactions, $FORMAT_WAIT;
-        foreach ($DOCUMENT_RESPONSE_TABLE as $identification){
-            foreach ($DOCUMENT_FORMATS as $format){
-                if(!empty($ALLOWED_TEST)){
-                    if(!(in_array($identification, $ALLOWED_TEST) && in_array($format, $ALLOWED_TEST[$identification]))){
-                        continue;
-                    }
-                }
 
+	public static function setUpBeforeClass(): void
+    {
+        global $TIMEWAIT;
+		global $ALLOWED_TEST, $client, $transactions, $FORMAT_WAIT;
+        foreach (DOCUMENT_RESPONSE_TABLE as $identification => $value){
+            foreach (DOCUMENT_FORMATS as $format){
+                if(!empty($ALLOWED_TEST)){
+                    if(!in_array($identification, array_keys($ALLOWED_TEST))){						
+                        continue;
+                    }else{
+						if(!in_array($format, $ALLOWED_TEST[$identification])){
+						   continue;
+						}
+					}
+                }
+				
                 $auth_resp = $client->sign(
                     $identification,
                     read_files($format),
                     sprintf("test %s", $format),
                     $_format=$format,
+                    $reason="Firma sin razon", 
+                    $place="Lugar desconocido"
                     );
-                if(!in_array($identification, $transactions)){
+                if(!in_array($identification, array_keys($transactions))){
                     $transactions[$identification] = array();
                 }
                 $transactions[$identification][$format] = $auth_resp;
+                
                 if($auth_resp['id_transaction'] == 0 && !in_array($identification, [
                         "500000000000",
                         "01-1919-2222",
@@ -45,42 +51,39 @@ class TestDocumentReceived extends TestCase
                     throw new Exception();
                 }
             }
-            sleep($FORMAT_WAIT);
-        }
-    }
-    function test_setUpClass()
-    {
-        global $TIMEWAIT;
-        try{
-            $this->load_signdocuments();
-        }catch (Exception $e){
-            print_r($e);
-        }
+		}
         sleep($TIMEWAIT);
         echo "Recuerde modificar los archivos de configuración y registrar " .
             "la institución en dfva";
     }
+	
 
     function do_checks($format, $identification)
     {
-        global $DOCUMENT_RESPONSE_TABLE, $transactions, $client;
+		settype($identification, 'string');
+        global  $ALLOWED_TEST, $transactions, $client;
         if (!empty($ALLOWED_TEST)) {
-            if (!(in_array($identification, $ALLOWED_TEST) && in_array($format, $ALLOWED_TEST[$identification]))) {
+            if (!in_array($identification,  array_keys($ALLOWED_TEST)) ) {
                 return null;
-            }
+            }else{
+				if(!in_array($format, $ALLOWED_TEST[$identification])){
+					return null;
+				}
+			}
         }
-
+		
         if (in_array($identification,
             ["500000000000",
                 "01-1919-2222",
                 "01-1919-2020",
                 "01-1919-2121",
                 "9-0000-0000-000"])) {
-            $this->assertSame($DOCUMENT_RESPONSE_TABLE[$identification][0], $transactions[$identification][$format]['status']);
+            $this->assertSame(DOCUMENT_RESPONSE_TABLE[$identification][0], $transactions[$identification][$format]['status']);
             return null;
         }
+
         $res = $client->sign_check($transactions[$identification][$format]['id_transaction']);
-        $this->assertSame($DOCUMENT_RESPONSE_TABLE[$identification][3],
+        $this->assertSame(DOCUMENT_RESPONSE_TABLE[$identification][3],
             $res['status']);
         $client->sign_delete($transactions[$identification][$format]['id_transaction']);
     }
@@ -440,7 +443,7 @@ class TestDocumentReceived extends TestCase
 class ContrafirmaWrong extends TestCase
 {
 
-    function test_setUpClass()
+	public static function setUpBeforeClass(): void
     {
         global $client, $TIMEWAIT, $transactions;
         $format = "xml_contrafirma";

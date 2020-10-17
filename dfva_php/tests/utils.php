@@ -22,13 +22,13 @@ const AUTHENTICATION_RESPONSE_TABLE = [
 ];
 
 
-$DOCUMENT_RESPONSE_TABLE = [
+const DOCUMENT_RESPONSE_TABLE = [
     # cedula    respuesta  comparacion   status   respuesta_notificacion
-    "500000000000"=> [1, '!', 0, 0],
-    "01-1919-2222"=> [4, '=', 0, 0],
-    "01-1919-2020"=> [5, '=', 0, 0],
-    "01-1919-2121"=> [9, '=', 0, 0],
-    "9-0000-0000-000"=> [10, '=', 0, 0],
+    '500000000000'=> [1, '!', 0, 0],
+    '01-1919-2222'=> [4, '=', 0, 0],
+    '01-1919-2020'=> [5, '=', 0, 0],
+    '01-1919-2121'=> [9, '=', 0, 0],
+    '9-0000-0000-000'=> [10, '=', 0, 0],
     # Con notificación
     '100000000000'=> [0, '!', 0, 1],
     '01-1010-2020'=> [0, '!', 0, 2],
@@ -41,15 +41,15 @@ $DOCUMENT_RESPONSE_TABLE = [
     '01-7788-9900'=> [0, '!', 0, 14]
 ];
 
-$DOCUMENT_FORMATS = ['xml_cofirma', 'xml_contrafirma',
+const DOCUMENT_FORMATS = ['xml_cofirma', 'xml_contrafirma',
     'odf', 'msoffice', 'pdf'];
 
 
-function read_files($format, $doc_path="dfva_testdocument/files",
+function read_files($format, $doc_path="../../../dfva_testdocument/files/",
     $post_read_fn=null, $name='test.')
 {
     if($post_read_fn == null){
-        $post_read_fn = function($a) {return $a;};
+        $post_read_fn = function($a) {return base64_encode($a);};
     }
     $defaultpath = dirname(__FILE__).'/'.$doc_path;
     $f = null;
@@ -68,7 +68,7 @@ function read_files($format, $doc_path="dfva_testdocument/files",
     $arch = fopen($fpath, 'rb');
     $filesize = filesize($fpath);
     $f = fread($arch, $filesize);
-    $f = base64_encode($f);
+    //$f = $post_read_fn($f);
     fclose($arch);
     return call_user_func($post_read_fn,$f);
 }
