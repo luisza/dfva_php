@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 require_once dirname(__FILE__).'/utils.php';
 require_once dirname(__FILE__).'/../client.php';
 
-$valclient = new DfvaClient;
+$valclient = new dfva_php\DfvaClient;
 
 function pem_to_base64($certificate){
     return utf8_decode(base64_encode($certificate));
@@ -23,7 +23,7 @@ $experated = [];
 
 class TestValidateCertificates extends TestCase{
 
-    function test_setUp(){
+	public static function setUpBeforeClass(): void {
         global $path, $experated;
         $path = "dfva_testdocument/files/certs/";
         $experated = [
@@ -82,7 +82,7 @@ $expected = [];
 
 class TestValidateDocuments extends TestCase
 {
-    function test_setUp()
+	public static function setUpBeforeClass(): void
     {
         global $expected;
         $expected = [
@@ -130,7 +130,7 @@ class TestValidateDocuments extends TestCase
                 array_push($dev, $ced);
             }
         }
-        $dev = sort($dev);
+        sort($dev);
         return $dev;
     }
 
@@ -142,7 +142,7 @@ class TestValidateDocuments extends TestCase
                 array_push($dev, $data['identification_number']);
             }
         }
-        $dev = sort($dev);
+        sort($dev);
         return $dev;
     }
 
@@ -153,7 +153,7 @@ class TestValidateDocuments extends TestCase
                 array_push($dev, (int) $data['code']);
             }
         }
-        $dev = sort($dev);
+        sort($dev);
         return $dev;
     }
 
@@ -171,36 +171,35 @@ class TestValidateDocuments extends TestCase
         $extracted_signers = $this->prepare_names($result['signers']);
 
         # expected
-        $expected_signers = $this->get_list_names(
-                $expected[$format][0]);
+        $expected_signers = $this->get_list_names($expected[$format][0]);
         $expected_errors = $expected[$format][2];
 
-        $expected_errors = sort($expected_errors);
-        $expected_signers = sort($expected_signers);
+		
+        sort($expected_errors);
+        
 
         $this->assertTrue($this->arrays_are_similar($extracted_signers, $expected_signers));
         $this->assertTrue($this->arrays_are_similar($extracted_errors, $expected_errors));
-        $this->assertSame($expected[$_format][1],
-            $result['was_successfully']);
+        $this->assertSame($expected[$_format][1], $result['was_successfully']);
     }
 
     function test_document_cofirma(){
         $this->do_check('cofirma', 'xml');
     }
 
-    function est_document_contrafirma(){
+    function test_document_contrafirma(){
         $this->do_check('contrafirma', 'xml');
     }
 
-    function est_document_msoffice(){
+    function test_document_msoffice(){
         $this->do_check('msoffice', 'msoffice');
     }
 
-    function est_document_odf(){
+    function test_document_odf(){
         $this->do_check('odf', 'odf');
     }
 
-    function est_document_pdf(){
+    function test_document_pdf(){
         $this->do_check('pdf', 'pdf');
     }
 }

@@ -8,20 +8,21 @@ $TEST_WITH_BCCR = getenv('TEST_WITH_BCCR') == 'True';
 $AUTH_ALLOWED_TEST = [];
 
 $authtransactions = [];
-$authclient = new DfvaClient;
+$authclient = new dfva_php\DfvaClient;
 
 
 class AuthenticationTest extends TestCase
 {
-    public function load_authentication()
+    
+	public static function setUpBeforeClass(): void
     {
-        global $AUTH_ALLOWED_TEST, $authclient, $authtransactions;
+        global $TIMEWAIT,  $AUTH_ALLOWED_TEST, $authclient, $authtransactions;
         foreach(AUTHENTICATION_RESPONSE_TABLE as $identification => $value){
             if(!empty($AUTH_ALLOWED_TEST) && !in_array($identification, $AUTH_ALLOWED_TEST)){
                 continue;
             }
             settype($identification, 'string');
-            $auth_resp = $authclient->authentication($identification, AUTHENTICATION["authenticate"]);
+            $auth_resp = $authclient->authentication($identification, dfva_php\AUTHENTICATION["authenticate"]);
             $authtransactions[$identification] = $auth_resp;
             //var_dump($authtransactions[$identification]);
             $eq = AUTHENTICATION_RESPONSE_TABLE[$identification][1];
@@ -34,19 +35,10 @@ class AuthenticationTest extends TestCase
                     throw new Exception("");
             }
         }
-    }
-    public function test_setUp()
-    {
-        global $TIMEWAIT;
-        try {
-            $this->load_authentication();
-        }catch (Exception $e)
-        {
-            throw new $e;
-        }
         sleep($TIMEWAIT);
         echo "\nRecuerde modificar el archivo settings.php y registrar la institución en dfva\n
                 export TEST_WITH_BCCR=True si se ejecuta con el BCCR\n";
+        
     }
 
     public function do_checks($identification){
@@ -64,10 +56,10 @@ class AuthenticationTest extends TestCase
                 return;
         }else{
             $res = $authclient->authentication($authtransactions[$identification]['id_transaction'],
-                AUTHENTICATION["authenticate_check"]);
+                dfva_php\AUTHENTICATION["authenticate_check"]);
             $this->assertSame(AUTHENTICATION_RESPONSE_TABLE[$identification][3], $res['status']);
             $delauth = $authclient->authentication($authtransactions[$identification]['id_transaction'],
-                AUTHENTICATION["authenticate_delete"]);
+                dfva_php\AUTHENTICATION["authenticate_delete"]);
             $this->assertSame($delauth, True);
         }
 
@@ -79,10 +71,10 @@ class AuthenticationTest extends TestCase
         # BCCR have not 88-8888-8888 identififcation
         if($TEST_WITH_BCCR)
             return;
-        $auth_resp = $authclient->authentication('88-8888-8888', AUTHENTICATION["authenticate"]);
+        $auth_resp = $authclient->authentication('88-8888-8888', dfva_php\AUTHENTICATION["authenticate"]);
         $this->assertSame($auth_resp['status'], 0);
         $this->assertNotSame($auth_resp['id_transaction'], 0);
-        $authclient->authentication($auth_resp['id_transaction'], AUTHENTICATION["authenticate_delete"]);
+        $authclient->authentication($auth_resp['id_transaction'], dfva_php\AUTHENTICATION["authenticate_delete"]);
     }
 
     /*

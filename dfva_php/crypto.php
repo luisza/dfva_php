@@ -1,4 +1,4 @@
-<?php namespace App\dfva_php;
+<?php namespace dfva_php;
 
 class dfva_crypto {    
   function __construct($settings) {

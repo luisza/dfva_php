@@ -1,5 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
+use dfva_php;
+
 include(dirname(__FILE__).'/../settings.php');
 
 class SettingsTest extends TestCase

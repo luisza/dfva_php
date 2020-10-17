@@ -1,4 +1,5 @@
-<?php namespace App\dfva_php;
+<?php namespace dfva_php;
+
 require_once dirname(__FILE__).'/crypto.php';
 require_once dirname(__FILE__).'/settings.php';
 
@@ -221,9 +222,8 @@ class DfvaClientInternal {
         $data['format']=$format;
       }
 
-      print_r($data);
       $data =json_encode($data);
-      $log = sprintf("[%s] [%s] [%s] Data Validate: %s %s", date("d-m-Y h:m:s"),
+      $log = sprintf("[%s] [%s] [%s] Data Validate: %s ", date("d-m-Y h:m:s"),
               __FILE__, 'DEBUG', $data).PHP_EOL;
       error_log($log, 3, FILE_PATH);
       $edata=$this->crypt->encrypt($data);
@@ -240,8 +240,8 @@ class DfvaClientInternal {
 
       $result = $this->send_post($url, $this->params);
       $data = $this->crypt->decrypt($result);
-      $log = sprintf("[%s] [%s] [%s] Decrypted Validate: %s %s", date("d-m-Y h:m:s"),
-              __FILE__, 'DEBUG', $data).PHP_EOL;
+      $log = sprintf("[%s] [%s] [%s] Decrypted Validate: %s", date("d-m-Y h:m:s"),
+              __FILE__, 'DEBUG', $data['status']).PHP_EOL;
       error_log($log, 3, FILE_PATH);
       return $data;
       

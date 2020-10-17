@@ -1,4 +1,4 @@
-<?php namespace App\dfva_php;
+<?php namespace dfva_php;
 
 class Settings {
     private $timezone = 'America/Costa_Rica';

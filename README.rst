@@ -17,7 +17,7 @@ Requiere php-curl para enviar peticiones.
 
 .. code:: sh
 
-    sudo apt install php7.x php-curl
+    sudo apt install php php-common phpunit php-curl
 
 En el settings.php se encuentra una constante llamada LOG_PATH que contiene el path hacia los logs, puedes cambiarlo a lo que ocupas sino corra el siguiente comando
 

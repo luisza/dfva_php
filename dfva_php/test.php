@@ -1,4 +1,4 @@
-<?php
+<?php namespace dfva_php;
 
 require 'client.php';
 $client= new DfvaClient;
